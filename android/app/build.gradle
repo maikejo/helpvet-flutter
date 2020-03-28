@@ -36,7 +36,7 @@ android {
         release {
             keyAlias keystoreProperties['pethomecare']
             keyPassword keystoreProperties['pethomecare']
-            storeFile file(keystoreProperties[System.getenv() + "/pethomecare_release.jks"])
+            storeFile keystoreProperties['pethomecare_release.jks']
             storePassword keystoreProperties['pethomecare']
         }
     }

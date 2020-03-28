@@ -8,6 +8,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
             <option value="D:/Programas/flutter_windows_v1.9.1+hotfix.2-stable/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.13.0+1/android" />
             <option value="D:/Programas/flutter_windows_v1.9.1+hotfix.2-stable/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_functions-0.4.1+6/android" />
             <option value="D:/Programas/flutter_windows_v1.9.1+hotfix.2-stable/flutter/.pub-cache/hosted/pub.dartlang.org/esys_flutter_share-1.0.2/android" />
@@ -40,8 +42,6 @@
             <option value="D:/Programas/flutter_windows_v1.9.1+hotfix.2-stable/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-1.2.0/android" />
             <option value="D:/Programas/flutter_windows_v1.9.1+hotfix.2-stable/flutter/.pub-cache/hosted/pub.dartlang.org/video_player-0.10.5+1/android" />
             <option value="D:/Programas/flutter_windows_v1.9.1+hotfix.2-stable/flutter/.pub-cache/hosted/pub.dartlang.org/video_player_web-0.1.1+1/android" />
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
