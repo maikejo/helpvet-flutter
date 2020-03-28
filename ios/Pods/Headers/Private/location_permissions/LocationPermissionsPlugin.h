@@ -1,0 +1,1 @@
+../../../../.symlinks/plugins/location_permissions/ios/Classes/LocationPermissionsPlugin.h

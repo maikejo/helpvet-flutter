@@ -1,0 +1,38 @@
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  lane :alpha do |options|
+      versions = google_play_track_version_codes(track: "internal")
+      version_code = versions[0]
+
+      upload_to_play_store(
+        track: 'internal',
+        track_promote_to: 'beta',
+        skip_upload_apk: true,
+        skip_upload_metadata: false,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        skip_upload_aab: true,
+        version_code: version_code
+      )
+    end
+
+  #This is our application deployment coding section
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease",
+     properties: {
+        "android.injected.signing.store.file" => "D:/Projetos/animal_home_care/pethomecare_release.jks",
+        "android.injected.signing.store.password" => "pethomecare",
+        "android.injected.signing.key.alias" => "pethomecare",
+        "android.injected.signing.key.password" => "pethomecare",
+        })
+    upload_to_play_store(track: 'internal')
+  end
+end

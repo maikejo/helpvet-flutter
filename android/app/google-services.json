@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "1089288303389",
+    "firebase_url": "https://animal-home-care.firebaseio.com",
+    "project_id": "animal-home-care",
+    "storage_bucket": "animal-home-care.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089288303389:android:45e87721ae0d0363ff67f4",
+        "android_client_info": {
+          "package_name": "br.com.pet.pethomecare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089288303389-bdneq3ogeppr3ih4kkr26p5fcjb2iilu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFmFtbzmoIxMWik99XMafYvu7D9qrp42Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089288303389-bdneq3ogeppr3ih4kkr26p5fcjb2iilu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089288303389:android:937e3f5108e5e4a1",
+        "android_client_info": {
+          "package_name": "com.example.flutterfiney"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089288303389-urvvtsjonijcpec2fub87kv4rds6vfcn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutterfiney",
+            "certificate_hash": "e3bba7b93635a5d535d082d81f96fc8ff1a8b05c"
+          }
+        },
+        {
+          "client_id": "1089288303389-bdneq3ogeppr3ih4kkr26p5fcjb2iilu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFmFtbzmoIxMWik99XMafYvu7D9qrp42Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089288303389-bdneq3ogeppr3ih4kkr26p5fcjb2iilu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

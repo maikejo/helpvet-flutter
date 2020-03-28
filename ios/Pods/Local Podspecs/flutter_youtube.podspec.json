@@ -1,0 +1,29 @@
+{
+  "name": "flutter_youtube",
+  "version": "0.0.1",
+  "summary": "Flutter Plugin to play youtube Videos",
+  "description": "Flutter Plugin to play youtube Videos",
+  "homepage": "http://example.com",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Your Company": "email@example.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "public_header_files": "Classes/**/*.h",
+  "dependencies": {
+    "Flutter": [
+
+    ],
+    "XCDYouTubeKit": [
+
+    ]
+  },
+  "platforms": {
+    "ios": "8.0"
+  }
+}
