@@ -34,6 +34,15 @@ android {
 
     signingConfigs {
         release {
+            keyAlias keystoreProperties['pethomecare']
+            keyPassword keystoreProperties['pethomecare']
+            storeFile file(keystoreProperties[System.getenv() + "/pethomecare_release.jks"])
+            storePassword keystoreProperties['pethomecare']
+        }
+    }
+
+    /*signingConfigs {
+        release {
             if (System.getenv()["CI"]) { // Configuração para deploy no codemagic
                 storeFile file(System.getenv()["FCI_BUILD_DIR"] + "/pethomecare_release.jks")
                 storePassword System.getenv()["FCI_KEYSTORE_PASSWORD"]
@@ -46,7 +55,7 @@ android {
                 keyPassword "helpvet"
             }
         }
-    }
+    }*/
 
     compileSdkVersion 29
 
