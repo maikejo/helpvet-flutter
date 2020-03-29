@@ -1,44 +1,35 @@
-jobs:
+language: generic
+
+# For now, Flutter doesn't provide a canonical way to define variables at build time
+# https://github.com/flutter/flutter/issues/26638
+
+env:
+  # Fastlane 세팅 중 Play Store Console에 실수로 이 버전 코드를 갖는 apk를 업로드 했는데
+  # 업로드한 apk를 삭제할 수단이 없어서 이 값을 버전 코드의 베이스로 사용한다.
+  - VERSION_CODE_BASE=1908191509 FLUTTER_BUILD_RELEASE_CHANNEL=beta
+
+branches:
+  only:
+    - master
+
+matrix:
   include:
-    # start android beta
-    - stage: Start Beta
-
+    - name: Android Build
       language: android
-      before_install:
-        - ANDROID_COMPILE_SDK=28
-        - ANDROID_BUILD_TOOLS=28.0.1
-        - ANDROID_SDK_TOOLS=4333796
-
-        # Install android tools
-        - export ANDROID_HOME=$HOME/android-sdk-linux
-        - wget -q https://dl.google.com/android/repository/sdk-tools-linux-$ANDROID_SDK_TOOLS.zip -O android-sdk-tools.zip
-        - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
-        - rm android-sdk-tools.zip
-        - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
-        # Silence warning.
-        - mkdir -p ~/.android
-        - touch ~/.android/repositories.cfg
-        # install correct version of java on osx (for sdkmanager to run)
-        #        - brew cask uninstall java; brew tap caskroom/versions; brew cask install java8;
-        # Accept licenses before installing components
-        #- yes | sdkmanager --licenses
-        # Platform tools
-        - yes | sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" > /dev/null
-        - sdkmanager --list | head -15
-
-      install:
-        - sudo apt-get install -y --no-install-recommends lib32stdc++6 libstdc++6 > /dev/null
-
-        # install flutter
-        - FLUTTER_CHANNEL=stable
-        - FLUTTER_VERSION=1.0.0-${FLUTTER_CHANNEL}
-        - wget --quiet --output-document=flutter.tar.xz https://storage.googleapis.com/flutter_infra/releases/${FLUTTER_CHANNEL}/linux/flutter_linux_v${FLUTTER_VERSION}.tar.xz && tar xf flutter.tar.xz > /dev/null && rm flutter.tar.xz
-        - export PATH="$PATH":"$PWD/.pub-cache/bin"
-        - export PATH=$PWD/flutter/bin:$PWD/flutter/bin/cache/dart-sdk/bin:$PATH
-        - flutter doctor -v
-
+      jdk: openjdk8
+      android:
+        components:
+          - build-tools-28.0.3
+          - android-28
+      before_script:
+        #- openssl aes-256-cbc -K $encrypted_d0cc22ff5b43_key -iv $encrypted_d0cc22ff5b43_iv -in secrets.tar.enc -out secrets.tar -d
+        #- tar xvf secrets.tar
+        - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
+        - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+        - gem install bundler && cd android && bundle install && cd ..
+        - yes | sdkmanager "platforms;android-28"
       script:
-        - (cd android && openssl enc -aes-256-cbc -d -in key.properties.enc -out key.properties -k $KEY_PASSWORD && openssl enc -aes-256-cbc -d -in key.jks.enc -out key.jks -k $KEY_PASSWORD && bundle exec fastlane beta)
-        - flutter build appbundle
+        - flutter doctor -v
+        - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
         - cd android
         - bundle exec fastlane beta
