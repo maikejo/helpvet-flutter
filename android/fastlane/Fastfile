@@ -32,23 +32,9 @@ platform :android do
 
   desc "Promote latest release build from beta to production and publish to the Play Store"
   lane :release do
-    release_notes(OS: 'android')
-    gradle(
-      task: "assembleRelease",
-      properties: {
-          "android.injected.signing.store.file" => "pethomecare_release.jks",
-          "android.injected.signing.store.password" => "pethomecare",
-          "android.injected.signing.key.alias" => "pethomecare",
-          "android.injected.signing.key.password" => "pethomecare"
-      }
-    )
     upload_to_play_store(
-      track: 'beta',
-      apk: '../build/app/outputs/apk/release/app-release.apk',
-      skip_upload_apk: false,
-      skip_upload_metadata: false,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/release/app.aab',
     )
   end
 end
