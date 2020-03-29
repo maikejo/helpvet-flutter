@@ -21,7 +21,7 @@ jobs:
         # install correct version of java on osx (for sdkmanager to run)
         #        - brew cask uninstall java; brew tap caskroom/versions; brew cask install java8;
         # Accept licenses before installing components
-        - yes | sdkmanager --licenses
+        #- yes | sdkmanager --licenses
         # Platform tools
         - yes | sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" > /dev/null
         - sdkmanager --list | head -15
