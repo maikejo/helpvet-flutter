@@ -1,1 +1,2 @@
+json_key_file("api-project-565090826836-21add420f81a.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
 package_name("br.com.pet.pethomecare") # e.g. com.krausefx.app

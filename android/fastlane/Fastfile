@@ -36,11 +36,11 @@ platform :android do
   desc "Promote latest release build from beta to production and publish to the Play Store"
   lane :release do
     #ensure_git_branch(branch: 'master')
-    #build_and_push_to_play_store_track(track: "production")
+    #build_and_push_to_play_store_track(track: "alpha")
     release_notes(OS: 'android')
     upload_to_play_store(
-      track: 'beta',
-      track_promote_to: 'production',
+      track: 'alpha',
+      track_promote_to: 'beta',
       json_key_data: ENV['GOOGLE_DEVELOPER_SERVICE_ACCOUNT_ACTOR_FASTLANE'],
       skip_upload_apk: true,
       skip_upload_metadata: true,
