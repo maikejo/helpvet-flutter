@@ -24,24 +24,24 @@ matrix:
         - ANDROID_COMPILE_SDK=28
         - ANDROID_BUILD_TOOLS=28.0.1
         - ANDROID_SDK_TOOLS=4333796
-          # Install android tools
-          - export ANDROID_HOME=$HOME/android-sdk-linux
-          - wget -q https://dl.google.com/android/repository/sdk-tools-linux-$ANDROID_SDK_TOOLS.zip -O android-sdk-tools.zip
-          - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
-          - rm android-sdk-tools.zip
-          - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
-          # Silence warning.
-          - mkdir -p ~/.android
-          - touch ~/.android/repositories.cfg
-          # install correct version of java on osx (for sdkmanager to run)
-          #        - brew cask uninstall java; brew tap caskroom/versions; brew cask install java8;
-          # Accept licenses before installing components
-          - yes | sdkmanager --licenses
-          # Platform tools
-          - yes | sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" > /dev/null
-          - sdkmanager --list | head -15
+        # Install android tools
+        - export ANDROID_HOME=$HOME/android-sdk-linux
+        - wget -q https://dl.google.com/android/repository/sdk-tools-linux-$ANDROID_SDK_TOOLS.zip -O android-sdk-tools.zip
+        - unzip -q android-sdk-tools.zip -d ${ANDROID_HOME}
+        - rm android-sdk-tools.zip
+        - PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
+        # Silence warning.
+        - mkdir -p ~/.android
+        - touch ~/.android/repositories.cfg
+        # install correct version of java on osx (for sdkmanager to run)
+        #        - brew cask uninstall java; brew tap caskroom/versions; brew cask install java8;
+        # Accept licenses before installing components
+        - yes | sdkmanager --licenses
+        # Platform tools
+        - yes | sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" > /dev/null
+        - sdkmanager --list | head -15
 
-          - gem install bundler && cd android && bundle install && cd ..
+        - gem install bundler && cd android && bundle install && cd ..
       script:
         - flutter doctor -v
         - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
