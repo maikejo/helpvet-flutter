@@ -43,9 +43,9 @@ matrix:
         - wget --quiet --output-document=flutter.tar.xz https://storage.googleapis.com/flutter_infra/releases/${FLUTTER_CHANNEL}/linux/flutter_linux_v${FLUTTER_VERSION}.tar.xz && tar xf flutter.tar.xz > /dev/null && rm flutter.tar.xz
         - export PATH="$PATH":"$PWD/.pub-cache/bin"
         - export PATH=$PWD/flutter/bin:$PWD/flutter/bin/cache/dart-sdk/bin:$PATH
-        - flutter doctor -v
-        - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
 
       script:
+        - flutter doctor -v
+        - flutter build appbundle
         - cd android
         - bundle exec fastlane beta
