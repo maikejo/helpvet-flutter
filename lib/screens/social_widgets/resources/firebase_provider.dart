@@ -93,10 +93,9 @@ class FirebaseProvider {
     return user;
   }*/
 
-  Future<String> uploadImageToStorage(File imageFile) async {
+  Future<String> uploadImageToStorage(File imageFile,String email) async {
     _storageReference = FirebaseStorage.instance
-        .ref()
-        .child('${DateTime.now().millisecondsSinceEpoch}');
+        .ref().child(email + "/posts/" + '${DateTime.now().millisecondsSinceEpoch}');
     StorageUploadTask storageUploadTask = _storageReference.putFile(imageFile);
     var url = await (await storageUploadTask.onComplete).ref.getDownloadURL();
     return url;

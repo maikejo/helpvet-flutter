@@ -167,8 +167,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     setState(() {
       imageFile = selectedImage;
     });
-    compressImage();
-    _repository.uploadImageToStorage(imageFile).then((url) {
+    //compressImage();
+    _repository.uploadImageToStorage(imageFile,null).then((url) {
       print("URL: $url");
       _repository.uploadImageMsgToDb(url, widget.receiverUid, _senderuid);
     });

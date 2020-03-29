@@ -15,25 +15,17 @@ Install _fastlane_ using
 or alternatively using `brew cask install fastlane`
 
 # Available Actions
-### release_notes
-```
-fastlane release_notes
-```
-Generate release notes
-
-----
-
 ## Android
 ### android beta
 ```
 fastlane android beta
 ```
-Push a release build to beta track
-### android release
+Submit a new Beta Build to Crashlytics Beta
+### android deploy
 ```
-fastlane android release
+fastlane android deploy
 ```
-Promote latest release build from beta to production and publish to the Play Store
+Deploy a new version to the Google Play
 
 ----
 

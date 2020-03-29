@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '8'
+    flutterVersionCode = '9'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '8.0.0'
+    flutterVersionName = '9.0.0'
 }
 
 apply plugin: 'com.android.application'
@@ -34,11 +34,18 @@ android {
 
     signingConfigs {
         release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile']
+            storePassword keystoreProperties['storePassword']
+        }
+
+       /* release {
             keyAlias keystoreProperties['pethomecare']
             keyPassword keystoreProperties['pethomecare']
             storeFile keystoreProperties['C:\\Projetos\\FLUTTER\\helpvet-flutter\\pethomecare_release.jks']
             storePassword keystoreProperties['pethomecare']
-        }
+        }*/
     }
 
     /*signingConfigs {
@@ -83,6 +90,17 @@ android {
              proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
          }
      }
+
+    /*flavorDimensions "default"
+    productFlavors {
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+        }
+        prod {
+            dimension "default"
+        }
+    }*/
 }
 
 flutter {

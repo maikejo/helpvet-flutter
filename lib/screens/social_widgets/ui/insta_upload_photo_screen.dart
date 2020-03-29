@@ -68,10 +68,10 @@ class _InstaUploadPhotoScreenState extends State<InstaUploadPhotoScreen> {
 
                 _repository.getCurrentUser().then((currentUser) {
                   if (currentUser != null) {
-                    compressImage();
+                    //compressImage();
                     _repository.retrieveUserDetails(currentUser).then((user) {
                       _repository
-                        .uploadImageToStorage(widget.imageFile)
+                        .uploadImageToStorage(widget.imageFile,currentUser.email)
                         .then((url) {
                       _repository.addPostToDb(user, url, _captionController.text, _locationController.text).then((value) {
                         print("Post added to db");
@@ -129,22 +129,22 @@ class _InstaUploadPhotoScreenState extends State<InstaUploadPhotoScreen> {
               )
             ],
           ),
-          Padding(
+        /*  Padding(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
               controller: _locationController,
               onChanged: ((value) {
-               /* setState(() {
+               *//* setState(() {
                   _locationController.text = value;
-                });*/
+                });*//*
               }),
               decoration: InputDecoration(
                 hintText: 'Adicionar Localização',
               ),
             ),
-          ),
+          ),*/
           Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: const EdgeInsets.only(left: 12.0,top: 10.0),
             child: FutureBuilder(
                 future: locateUser(),
                 builder: ((context, AsyncSnapshot<List<Address>> snapshot) {
@@ -156,6 +156,8 @@ class _InstaUploadPhotoScreenState extends State<InstaUploadPhotoScreen> {
                         GestureDetector(
                           child: Chip(
                             label: Text(snapshot.data.first.subAdminArea),
+                            backgroundColor: Colors.indigo,
+                            labelStyle: TextStyle(color: Colors.white),
                           ),
                           onTap: () {
                             setState(() {
@@ -169,6 +171,8 @@ class _InstaUploadPhotoScreenState extends State<InstaUploadPhotoScreen> {
                             child: Chip(
                               label: Text(snapshot.data.first.subAdminArea +
                                   ", " + snapshot.data.first.subLocality),
+                              backgroundColor: Colors.indigo,
+                              labelStyle: TextStyle(color: Colors.white),
                             ),
                             onTap: () {
                               setState(() {
