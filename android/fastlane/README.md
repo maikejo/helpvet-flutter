@@ -34,11 +34,6 @@ Push a release build to beta track
 fastlane android release
 ```
 Promote latest release build from beta to production and publish to the Play Store
-### android deploy
-```
-fastlane android deploy
-```
-Deploy a new version to the Google Play
 
 ----
 
