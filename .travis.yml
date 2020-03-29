@@ -78,4 +78,4 @@ jobs:
         # fail on error
 #        - set -e
 
-        - (cd android && bundle exec fastlane release && cd ../ios && bundle exec fastlane release)
+        - (cd android && bundle exec fastlane release)
