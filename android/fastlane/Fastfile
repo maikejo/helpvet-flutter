@@ -15,6 +15,7 @@ platform :android do
 
   desc "Build and push to play store track"
   private_lane :build_and_push_to_play_store_track do |options|
+    gradle(task: "assembleRelease")
     get_build_name_and_build_number
     release_notes(OS: 'android')
     sh ("cd ../.. && flutter build apk --build-name=#{@build_name} --build-number=#{@build_number}")
