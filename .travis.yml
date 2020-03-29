@@ -27,15 +27,9 @@ matrix:
         - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
         - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
         - gem install bundler && cd android && bundle install && cd ..
+        - flutter doctor --android-licenses
       script:
         - flutter doctor -v
-        - flutter doctor --android-licenses
-        - y
-        - y
-        - y
-        - y
-        - y
-        - y
         - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
         - cd android
         - bundle exec fastlane beta
