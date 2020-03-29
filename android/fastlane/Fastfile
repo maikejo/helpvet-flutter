@@ -32,7 +32,7 @@ platform :android do
 
   desc "Promote latest release build from beta to production and publish to the Play Store"
   lane :release do
-    release_notes(OS: 'android'),
+    release_notes(OS: 'android')
     gradle(
       task: "assembleRelease",
       properties: {
