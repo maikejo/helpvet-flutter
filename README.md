@@ -1,8 +1,7 @@
-# flutter_finey
+# HelpVet
 
-A new Flutter project.
+Novo projeto em flutter
 
-## Getting Started
+## Iniciar
 
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+[![Build Status](https://travis-ci.org/maikejo/helpvet-flutter.svg?branch=master)](https://travis-ci.org/maikejo/helpvet-flutter)
