@@ -33,14 +33,6 @@ matrix:
         # Silence warning.
         - mkdir -p ~/.android
         - touch ~/.android/repositories.cfg
-        # install correct version of java on osx (for sdkmanager to run)
-        #        - brew cask uninstall java; brew tap caskroom/versions; brew cask install java8;
-        # Accept licenses before installing components
-        - yes | sdkmanager --licenses
-        # Platform tools
-        - yes | sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "build-tools;${ANDROID_BUILD_TOOLS}" > /dev/null
-        - sdkmanager --list | head -15
-
         - gem install bundler && cd android && bundle install && cd ..
       script:
         - flutter doctor -v
