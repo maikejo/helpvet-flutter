@@ -40,8 +40,8 @@ platform :android do
     #build_and_push_to_play_store_track(track: "alpha")
     release_notes(OS: 'android')
     upload_to_play_store(
-      track: 'alpha',
-      track_promote_to: 'beta',
+      track: 'beta',
+      #track_promote_to: 'beta',
       #json_key_data: ENV['GOOGLE_DEVELOPER_SERVICE_ACCOUNT_ACTOR_FASTLANE'],
       skip_upload_apk: true,
       skip_upload_metadata: true,
