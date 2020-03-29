@@ -21,12 +21,12 @@ matrix:
         components:
           - build-tools-28.0.3
           - android-28
-      before_install:
+
+      before_script:
         - yes | sdkmanager --licenses
         - yes | sdkmanager "platforms;android-28.0.3"
         - yes | sdkmanager "platforms;android-29"
 
-      before_script:
         #- openssl aes-256-cbc -K $encrypted_d0cc22ff5b43_key -iv $encrypted_d0cc22ff5b43_iv -in secrets.tar.enc -out secrets.tar -d
         #- tar xvf secrets.tar
         - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
