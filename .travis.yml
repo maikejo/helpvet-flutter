@@ -27,7 +27,8 @@ matrix:
         - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
         - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
         - gem install bundler && cd android && bundle install && cd ..
-        - yes | sdkmanager "platforms;android-28"
+        - yes | sdkmanager "platforms;android-28.0.3"
+        - yes | sdkmanager "platforms;android-29"
       script:
         - flutter doctor -v
         - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
