@@ -34,8 +34,20 @@ matrix:
         - mkdir -p ~/.android
         - touch ~/.android/repositories.cfg
         - gem install bundler && cd android && bundle install && cd ..
-      script:
+
+      install:
+        - sudo apt-get install -y --no-install-recommends lib32stdc++6 libstdc++6 > /dev/null
+        # install version of fastlane from Gemfile.lock
+        - bundle install > /dev/null
+        # install flutter
+        - FLUTTER_CHANNEL=stable
+        - FLUTTER_VERSION=1.0.0-${FLUTTER_CHANNEL}
+        - wget --quiet --output-document=flutter.tar.xz https://storage.googleapis.com/flutter_infra/releases/${FLUTTER_CHANNEL}/linux/flutter_linux_v${FLUTTER_VERSION}.tar.xz && tar xf flutter.tar.xz > /dev/null && rm flutter.tar.xz
+        - export PATH="$PATH":"$PWD/.pub-cache/bin"
+        - export PATH=$PWD/flutter/bin:$PWD/flutter/bin/cache/dart-sdk/bin:$PATH
         - flutter doctor -v
+
+      script:
         - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
         - cd android
         - bundle exec fastlane beta
