@@ -21,7 +21,6 @@ platform :android do
     upload_to_play_store(
       track: options[:track],
       apk: '../build/app/outputs/apk/release/app-release.apk',
-      json_key_data: ENV['GOOGLE_DEVELOPER_SERVICE_ACCOUNT_ACTOR_FASTLANE'],
     )
   end
 
@@ -36,7 +35,6 @@ platform :android do
     release_notes(OS: 'android')
     upload_to_play_store(
       track: 'beta',
-      json_key_data: ENV['GOOGLE_DEVELOPER_SERVICE_ACCOUNT_ACTOR_FASTLANE'],
       skip_upload_apk: false,
       skip_upload_metadata: false,
       skip_upload_images: true,
