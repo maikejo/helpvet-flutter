@@ -37,9 +37,10 @@ matrix:
         - ls -la
         - chmod +x /home/travis/build/maikejo/helpvet-flutter/android/gradlew
       script:
-        #- yes | flutter doctor --android-licenses
-        - flutter doctor && flutter -v build --verbose apk
-        #- flutter build apk --debug
+        #- flutter doctor && flutter -v build apk --debug
+        - flutter build appbundle
+        - cd android
+        - bundle exec fastlane beta
 install:
   - git clone -b 'v1.12.13+hotfix.8' --depth 1 https://github.com/flutter/flutter.git
   - export PATH="$PATH:`pwd`/flutter/bin"
