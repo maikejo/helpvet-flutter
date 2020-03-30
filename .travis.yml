@@ -26,7 +26,7 @@ matrix:
         - gem install bundler && cd android && bundle install && cd ..
       script:
         - flutter doctor -v
-        - flutter build apk --debug
+        #- flutter build apk --debug
         #- flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
-        - cd android
-        - bundle exec fastlane beta
+        #- cd android
+        #- bundle exec fastlane beta
