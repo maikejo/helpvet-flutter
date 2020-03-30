@@ -1,39 +1,33 @@
-language: generic
-
-# For now, Flutter doesn't provide a canonical way to define variables at build time
-# https://github.com/flutter/flutter/issues/26638
+language: android
+sudo: required
+jdk: oraclejdk8
 
 env:
-  # Fastlane 세팅 중 Play Store Console에 실수로 이 버전 코드를 갖는 apk를 업로드 했는데
-  # 업로드한 apk를 삭제할 수단이 없어서 이 값을 버전 코드의 베이스로 사용한다.
-  - VERSION_CODE_BASE=1908191509 FLUTTER_BUILD_RELEASE_CHANNEL=beta
+  global:
+    - ANDROID_API_LEVEL=28
+    - ANDROID_BUILD_TOOLS_VERSION=28.0.3
 
-branches:
-  only:
-    - master
+android:
+  components:
+    - tools
+    - platform-tools
+    - tools
+    - extra-android-m2repository
+  licenses:
+    - 'android-sdk-preview-license-52d11cd2'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 
-matrix:
-  include:
-    - name: Android Build
-      language: android
-      jdk: openjdk8
-      android:
-        components:
-          - build-tools-28.0.3
-          - android-28
+before_install:
+  - touch $HOME/.android/repositories.cfg
+  - yes | sdkmanager "platforms;android-28"
+  - yes | sdkmanager "build-tools;28.0.3"
+  - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
+  - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+  - gem install bundler && cd android && bundle install && cd ..
 
-      before_script:
-        #- openssl aes-256-cbc -K $encrypted_d0cc22ff5b43_key -iv $encrypted_d0cc22ff5b43_iv -in secrets.tar.enc -out secrets.tar -d
-        #- tar xvf secrets.tar
-        - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
-        - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
-        - gem install bundler && cd android && bundle install && cd ..
-        - yes | sdkmanager "platforms;android-28.0.3"
-        - yes | sdkmanager "platforms;android-29"
-
-
-      script:
-        - flutter doctor -v
-        #- flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
-        - cd android
-        - bundle exec fastlane beta
+script:
+  - flutter doctor -v
+  - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
+  - cd android
+  - bundle exec fastlane beta
