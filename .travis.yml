@@ -1,41 +1,44 @@
-language: generic
-
-# For now, Flutter doesn't provide a canonical way to define variables at build time
-# https://github.com/flutter/flutter/issues/26638
-
-env:
-  # Fastlane 세팅 중 Play Store Console에 실수로 이 버전 코드를 갖는 apk를 업로드 했는데
-  # 업로드한 apk를 삭제할 수단이 없어서 이 값을 버전 코드의 베이스로 사용한다.
-  - VERSION_CODE_BASE=1908191509 FLUTTER_BUILD_RELEASE_CHANNEL=beta
-
-branches:
-  only:
-    - master
-
-matrix:
-  include:
-    - name: Android Build
-      language: android
-      jdk: openjdk8
-      android:
-        components:
-          - tools
-          - platform-tools
-          - extra-google-google_play_services
-          - extra-google-m2repository
-          - extra-android-m2repository
-          - build-tools-29.0.6
-          - android-29
-      before_install:
-        - yes | sdkmanager "platforms;android-29"
-      before_script:
-        #- openssl aes-256-cbc -K $encrypted_d0cc22ff5b43_key -iv $encrypted_d0cc22ff5b43_iv -in secrets.tar.enc -out secrets.tar -d
-        #- tar xvf secrets.tar
-        - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
-        - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
-        - gem install bundler && cd android && bundle install && cd ..
-      script:
-        #- flutter doctor -v
-        - flutter build appbundle --build-number=$(( $VERSION_CODE_BASE + $TRAVIS_BUILD_NUMBER ))
-        - cd android
-        - bundle exec fastlane beta
+os: linux
+language: android
+# android 相关的证书
+licenses:
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
+# android 相关环境
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-28.0.3
+    - android-28
+    - sys-img-armeabi-v7a-google_apis-28
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - extra-google-android-support
+jdk: oraclejdk8
+sudo: false
+# 运行 ci 的 docker 容器
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libstdc++6
+      - fonts-droid
+# flutter doctor --android-licenses 要求先运行下面这条语句， yes | 表示后面的命令如果需要你输入 y/n 会自动帮你输入 y
+before_install:
+  - yes | sdkmanager --update
+before_script:
+  - git clone https://github.com/flutter/flutter.git -b stable --depth 1
+  - export PATH="$PATH:`pwd`/flutter/bin"
+script:
+  - flutter packages get
+  - flutter precache
+  # 由于用的新的 android , 需要接受额外的一些证书
+  - yes | flutter doctor --android-licenses
+  - flutter doctor && flutter -v build appbundle
+# 缓存
+cache:
+  directories:
+    - "$HOME/.pub-cache"
