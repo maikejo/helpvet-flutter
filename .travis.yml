@@ -23,7 +23,7 @@ matrix:
           - extra-google-m2repository
           - extra-google-android-support
       jdk: oraclejdk8
-      sudo: false
+      #sudo: false
       addons:
         apt:
           sources:
