@@ -22,6 +22,8 @@ before_install:
   - touch $HOME/.android/repositories.cfg
   - yes | sdkmanager "platforms;android-28"
   - yes | sdkmanager "build-tools;28.0.3"
+
+before_script:
   - git clone https://github.com/flutter/flutter.git -b $FLUTTER_BUILD_RELEASE_CHANNEL
   - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
   - gem install bundler && cd android && bundle install && cd ..
