@@ -32,6 +32,8 @@ matrix:
             - libstdc++6
             - fonts-droid
       # 确保 sdkmanager 是最新的
+      before_install:
+        - chmod +x gradlew
       before_script:
         - yes | sdkmanager --update
       script:
