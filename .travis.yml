@@ -1,23 +1,57 @@
-language: android
-os:
-  - linux
+#language: dart
+#script:
+#  - dart main.dart
 
-android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-28.0.3
-    - android-28
-    - extra-android-support
-    - extra-google-google_play_services
-    - extra-android-m2repository
-    - extra-google-m2repository
-
-before_install:
-  - git clone -b beta --depth=1 https://github.com/flutter/flutter.git
-
+matrix:
+  include:
+    - os: linux
+      language: android
+      dist: trusty
+      licenses:
+        - 'android-sdk-preview-license-.+'
+        - 'android-sdk-license-.+'
+        - 'google-gdk-license-.+'
+      # 声明需要安装的 Android 组件
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - android-28
+          - sys-img-armeabi-v7a-google_apis-28
+          - extra-android-m2repository
+          - extra-google-m2repository
+          - extra-google-android-support
+      jdk: oraclejdk8
+      sudo: false
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libstdc++6
+            - fonts-droid
+      # 确保 sdkmanager 是最新的
+      before_script:
+        - yes | sdkmanager --update
+      script:
+        - yes | flutter doctor --android-licenses
+        - flutter doctor && flutter -v build apk
+    # 声明 iOS 的运行环境
+    - os: osx
+      language: objective-c
+      osx_image: xcode10.2
+      before_script:
+        - pod repo update
+      script:
+        - flutter doctor && flutter -v build ios --no-codesign
+      before_deploy:
+        - mkdir app && mkdir app/Payload
+        - cp -r build/ios/iphoneos/Runner.app app/Payload
+        - pushd app && zip -r -m app.ipa Payload  && popd
 install:
-  - export PATH=./flutter/bin:$PATH
-
-script:
-  - flutter build apk --debug
+  - git clone -b 'v1.9.1+hotfix.4' --depth 1 https://github.com/flutter/flutter.git
+  - export PATH="$PATH:`pwd`/flutter/bin"
+cache:
+  directories:
+    - $HOME/.pub-cache
