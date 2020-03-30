@@ -39,7 +39,7 @@ matrix:
         #- flutter doctor
         - flutter build apk --debug
 install:
-  - git clone -b 'v1.9.1+hotfix.4' --depth 1 https://github.com/flutter/flutter.git
+  - git clone -b 'v1.12.13+hotfix.8' --depth 1 https://github.com/flutter/flutter.git
   - export PATH="$PATH:`pwd`/flutter/bin"
 cache:
   directories:
