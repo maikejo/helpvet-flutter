@@ -16,8 +16,6 @@ android:
 
 jdk: oraclejdk8
 
-sudo: true
-
 addons:
   apt:
     # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
@@ -33,8 +31,4 @@ cache:
 install:
   - git clone https://github.com/flutter/flutter.git -b stable --depth 1
   - export PATH=./flutter/bin:$PATH
-  - flutter doctor
-
-script:
-  - flutter packages get
-  - flutter build apk --debug
+  - flutter doctor -v
