@@ -16,6 +16,8 @@ matrix:
         components:
           - build-tools-28.0.3
           - android-28
+      before_install:
+        - yes | sdkmanager --update
       before_script:
         #- openssl aes-256-cbc -K $encrypted_d0cc22ff5b43_key -iv $encrypted_d0cc22ff5b43_iv -in secrets.tar.enc -out secrets.tar -d
         #- tar xvf secrets.tar
