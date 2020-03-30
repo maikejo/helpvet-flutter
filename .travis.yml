@@ -20,5 +20,4 @@ install:
   - export PATH=./flutter/bin:$PATH
 
 script:
-  - flutter build aot
-  - flutter build apk
+  - flutter build apk --debug
