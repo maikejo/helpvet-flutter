@@ -39,6 +39,7 @@ matrix:
       script:
         #- flutter doctor && flutter -v build apk --debug
         - flutter build appbundle
+        - gem install bundler && cd android && bundle install && cd ..
         - cd android
         - bundle exec fastlane beta
 install:
