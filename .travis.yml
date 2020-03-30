@@ -16,7 +16,7 @@ android:
 
 jdk: oraclejdk8
 
-sudo: false
+sudo: true
 
 addons:
   apt:
@@ -30,7 +30,6 @@ addons:
 cache:
   directories:
     - "$HOME/.pub-cache"
-    -
 install:
   - git clone https://github.com/flutter/flutter.git -b stable --depth 1
   - export PATH=./flutter/bin:$PATH
