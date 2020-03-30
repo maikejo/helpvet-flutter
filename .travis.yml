@@ -41,6 +41,6 @@ matrix:
 
       script:
         - flutter doctor -v
-        #- flutter build appbundle
+        - flutter build appbundle
         - cd android
         - bundle exec fastlane beta
