@@ -36,7 +36,7 @@ matrix:
         - yes | sdkmanager --update
         - pwd
         - ls -la
-        - chmod +x /.gradlew
+        - chmod +x ./gradlew
       script:
         #- yes | flutter doctor --android-licenses
         - flutter doctor && flutter -v build --verbose apk
