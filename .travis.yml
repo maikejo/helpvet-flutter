@@ -1,32 +1,42 @@
 os: linux
+
 language: android
-# android 相关环境
+
+licenses:
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
+
 android:
   components:
+    - tools
+    - platform-tools
     - build-tools-28.0.3
-    - android-28
+    - android-28 # match your targetVersion
+
 jdk: oraclejdk8
+
 sudo: false
-# 运行 ci 的 docker 容器
+
 addons:
   apt:
+    # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
     sources:
       - ubuntu-toolchain-r-test
     packages:
       - libstdc++6
       - fonts-droid
-# flutter doctor --android-licenses 要求先运行下面这条语句， yes | 表示后面的命令如果需要你输入 y/n 会自动帮你输入 y
-before_install:
-  - yes | sdkmanager --update
-before_script:
-  - git clone https://github.com/flutter/flutter.git -b stable --depth 1
-  - export PATH="$PATH:`pwd`/flutter/bin"
-script:
-  - flutter packages get
-  # 由于用的新的 android , 需要接受额外的一些证书
-  #- yes | flutter doctor --android-licenses
-  - flutter -v build appbundle
-# 缓存
+
 cache:
   directories:
     - "$HOME/.pub-cache"
+    -
+install:
+  - git clone https://github.com/flutter/flutter.git -b stable --depth 1
+  - export PATH=./flutter/bin:$PATH
+  - flutter doctor
+
+script:
+  - flutter packages get
+  - flutter analyze --no-pub --no-current-package lib/ test/
+  - flutter test --no-pub test/
