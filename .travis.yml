@@ -32,14 +32,13 @@ matrix:
             - libstdc++6
             - fonts-droid
       # 确保 sdkmanager 是最新的
-      before_install:
-        - chmod +x gradlew
       before_script:
         - yes | sdkmanager --update
       script:
         #- yes | flutter doctor --android-licenses
         #- flutter doctor
-        - flutter build apk --debug
+        - flutter build appbundle
+        #- flutter build apk --debug
 install:
   - git clone -b 'v1.12.13+hotfix.8' --depth 1 https://github.com/flutter/flutter.git
   - export PATH="$PATH:`pwd`/flutter/bin"
