@@ -36,8 +36,7 @@ matrix:
         - yes | sdkmanager --update
       script:
         #- yes | flutter doctor --android-licenses
-        #- flutter doctor
-        - flutter build appbundle
+        - flutter doctor && flutter -v build apk
         #- flutter build apk --debug
 install:
   - git clone -b 'v1.12.13+hotfix.8' --depth 1 https://github.com/flutter/flutter.git
