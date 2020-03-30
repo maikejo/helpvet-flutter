@@ -34,6 +34,7 @@ matrix:
       # 确保 sdkmanager 是最新的
       before_script:
         - yes | sdkmanager --update
+        - chmod +x gradlew
       script:
         #- yes | flutter doctor --android-licenses
         - flutter doctor && flutter -v build --verbose apk
