@@ -6,6 +6,7 @@ default_platform(:android)
 platform :android do
   desc "ENVIANDO VERSAO BETA - GOOGLE PLAY"
   lane :beta do
+
     begin
       upload_to_play_store(
         track: 'beta',

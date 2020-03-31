@@ -1,7 +1,7 @@
 name: flutter_finey
 description: A new Flutter project.
 
-version: 1.0.1
+version: 1.0.0+10
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
