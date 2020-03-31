@@ -1,6 +1,5 @@
-#language: dart
-#script:
-#  - dart main.dart
+#Arquivo de configuração para CI/CD - Travis CI
+#A tag matrix é utilizado para que seja configurado multiplo build/deploy - ANDROID/IOS
 
 matrix:
   include:
@@ -11,7 +10,8 @@ matrix:
         - 'android-sdk-preview-license-.+'
         - 'android-sdk-license-.+'
         - 'google-gdk-license-.+'
-      # 声明需要安装的 Android 组件
+
+      # ANDROID BUILD
       android:
         components:
           - tools
@@ -31,18 +31,21 @@ matrix:
           packages:
             - libstdc++6
             - fonts-droid
-      # 确保 sdkmanager 是最新的
+
+      # HABILITAR LICENÇA ANDROID GRADLEW
       before_script:
         - yes | sdkmanager --update
         - ls -la
         - chmod +x /home/travis/build/maikejo/helpvet-flutter/android/gradlew
       script:
-        #- flutter doctor && flutter -v build apk --debug
-        - flutter build appbundle
+        # EXECUTA SCRIPT PARA BUILD DO APPBUNDLE RELEASE
+        - flutter build appbundle --release
         - gem install bundler && cd android && bundle install && cd ..
         - cd android
+        # EXECUTA LANE PARA DEPLOY NO GOOGLE PLAY
         - bundle exec fastlane beta
 install:
+  # INSTALA SDK FLUTTER - V2.17
   - git clone -b 'v1.12.13+hotfix.8' --depth 1 https://github.com/flutter/flutter.git
   - export PATH="$PATH:`pwd`/flutter/bin"
 cache:
