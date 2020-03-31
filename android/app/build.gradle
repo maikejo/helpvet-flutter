@@ -39,7 +39,6 @@ android {
             storeFile file(keystoreProperties['storeFile'])
             storePassword keystoreProperties['storePassword']
         }
-
        /* release {
             keyAlias keystoreProperties['pethomecare']
             keyPassword keystoreProperties['pethomecare']
