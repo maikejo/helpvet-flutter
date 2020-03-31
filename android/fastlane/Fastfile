@@ -14,7 +14,7 @@ platform :android do
       )
       rescue => exception
         raise exception unless exception.message.include?('apkUpgradeVersionConflict')
-        puts 'Current version already present on the Play Store. Omitting this upload.'
+        puts 'Versão atual já presente na Play Store. Omitindo este upload.'
     end
   end
 
