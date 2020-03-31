@@ -758,9 +758,9 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: <Widget>[
                                       FadeIn(1,Container(
-                                        padding: EdgeInsets.only(top: 16),
+                                        //padding: EdgeInsets.only(bottom: 16),
                                         width: MediaQuery.of(context).size.width,
-                                        height: sizeConfig.dynamicScaleSize(size: 255),
+                                        height: sizeConfig.dynamicScaleSize(size: 250),
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
                                             begin: Alignment.topCenter,
@@ -844,7 +844,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                               ],
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 21, bottom: 25),
+                                              padding: const EdgeInsets.only(bottom: 54),
                                               child: Text(
                                                 snapshot.data.nome,
                                                 style: TextStyle(
@@ -858,12 +858,10 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                               decoration: BoxDecoration(
                                                 color: Color(0xFF162A49),
                                                 borderRadius: BorderRadius.only(
-                                                  bottomRight: Radius.circular(18),
-                                                  bottomLeft: Radius.circular(18)
+                                                bottomRight: Radius.circular(45),
+                                                bottomLeft: Radius.circular(45)
                                                 ),
                                               ),
-                                              height: 50.0,
-                                              padding: const EdgeInsets.all(1.0),
 
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

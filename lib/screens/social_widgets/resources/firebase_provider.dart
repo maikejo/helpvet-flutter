@@ -340,7 +340,7 @@ class FirebaseProvider {
     QuerySnapshot querySnapshot =
         await _firestore.collection("usuarios").where('tipo', isEqualTo: 'CLI').getDocuments();
     for (var i = 0; i < querySnapshot.documents.length; i++) {
-      if (querySnapshot.documents[i].documentID != user.uid) {
+      if (querySnapshot.documents[i].documentID != user.email) {
         userList.add(User.fromMap(querySnapshot.documents[i].data));
         //userList.add(querySnapshot.documents[i].data[User.fromMap(mapData)]);
       }
