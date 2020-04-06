@@ -5,7 +5,8 @@ import '../../styles/common_styles.dart';
 
 class SignUpForm extends StatelessWidget {
   SignUpForm(this._nomeController, this._emailController, this._senhaController,
-      this._repetirSenhaController,this._cpfController,this._telefoneController);
+      this._repetirSenhaController,this._cpfController,this._telefoneController,
+      this._crmvController, this.tipoConta);
 
   final TextEditingController _nomeController;
   final TextEditingController _emailController;
@@ -13,6 +14,8 @@ class SignUpForm extends StatelessWidget {
   final TextEditingController _repetirSenhaController;
   final TextEditingController _cpfController;
   final TextEditingController _telefoneController;
+  final TextEditingController _crmvController;
+  final String tipoConta;
 
   var maskTelefoneFormatter = new MaskTextInputFormatter(mask: '(##) ###-###-###', filter: { "#": RegExp(r'[0-9]') });
   var maskCpfFormatter = new MaskTextInputFormatter(mask: '###.###.###-##', filter: { "#": RegExp(r'[0-9]') });
@@ -53,9 +56,20 @@ class SignUpForm extends StatelessWidget {
                         labelStyle:
                         CommonStyles(context: context).getLabelText()))),
 
+            tipoConta == 'VET' ? ResponsivePadding(
+                  padding: const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 15.0),
+                  child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: _crmvController,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.description, color: Colors.pinkAccent),
+                          fillColor: Colors.red,
+                          labelText: 'CRMV',
+                          labelStyle:
+                          CommonStyles(context: context).getLabelText()))) : SizedBox(),
+
             ResponsivePadding(
-                padding: const EdgeInsets.only(
-                    left: 40.0, right: 40.0, bottom: 15.0),
+                padding: const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 15.0),
                 child: TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -66,8 +80,7 @@ class SignUpForm extends StatelessWidget {
                             CommonStyles(context: context).getLabelText()))),
 
             ResponsivePadding(
-                padding: const EdgeInsets.only(
-                    left: 40.0, right: 40.0, bottom: 15.0),
+                padding: const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 15.0),
                 child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _telefoneController,
@@ -80,8 +93,7 @@ class SignUpForm extends StatelessWidget {
                         CommonStyles(context: context).getLabelText()))),
 
             ResponsivePadding(
-                padding: const EdgeInsets.only(
-                    left: 40.0, right: 40.0, bottom: 15.0),
+                padding: const EdgeInsets.only(left: 40.0, right: 40.0, bottom: 15.0),
                 child: TextFormField(
                     controller: _senhaController,
                     obscureText: true,

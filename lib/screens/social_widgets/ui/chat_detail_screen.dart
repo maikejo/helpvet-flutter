@@ -161,7 +161,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   Future<void> pickImage({String source}) async {
-    var selectedImage = await ImagePicker.pickImage(
+    var selectedImage = await ImagePicker.pickImage(maxHeight: 480, maxWidth: 640,
         source: source == 'Gallery' ? ImageSource.gallery : ImageSource.camera);
 
     setState(() {

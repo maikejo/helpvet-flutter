@@ -18,8 +18,8 @@ class _InstaAddScreenState extends State<InstaAddScreen> {
 
     action == 'Galeria'
         ? selectedImage =
-            await ImagePicker.pickImage(source: ImageSource.gallery)
-        : await ImagePicker.pickImage(source: ImageSource.camera);
+            await ImagePicker.pickImage(source: ImageSource.gallery,maxHeight: 480, maxWidth: 640)
+        : await ImagePicker.pickImage(source: ImageSource.camera,maxHeight: 480, maxWidth: 640);
 
     return selectedImage;
   }

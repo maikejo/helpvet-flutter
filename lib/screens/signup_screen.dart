@@ -19,9 +19,9 @@ import './signup_widgets/sign_up_bottom.dart';
 import '../styles/common_variables.dart';
 
 class SignupScreen extends StatefulWidget {
-  SignupScreen({Key key, this.title}) : super(key: key);
+  SignupScreen({Key key, this.tipoConta,}) : super(key: key);
 
-  final String title;
+  final String tipoConta;
 
   @override
   _SignupScreenState createState() => new _SignupScreenState();
@@ -33,6 +33,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _cpfController = TextEditingController();
   final _senhaController = TextEditingController();
   final _telefoneController = TextEditingController();
+  final _crmvController = TextEditingController();
 
   File _fileController;
   String _urlAvatarController;
@@ -113,13 +114,15 @@ class _SignupScreenState extends State<SignupScreen> {
               nome: _nomeController.text,
               email: _emailController.text,
               senha: _senhaController.text,
-              tipo: "CLI",
+              tipo: widget.tipoConta,
               imagemUrl: _urlAvatarController,
               diasPlano: 7,
               dtCriacao: Timestamp.now(),
               ativado: true,
               cpf: _cpfController.text,
-              telefone: _telefoneController.text
+              telefone: _telefoneController.text,
+              crmv: _crmvController.text
+
           ));
 
           Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
@@ -161,7 +164,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildWithConstraints(BuildContext context, BoxConstraints constraints) {
-    final sizeConfig = SizeConfig(mediaQueryData: MediaQuery.of(context));
 
     var column = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,13 +228,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                     _senhaController,
                                     _senhaController,
                                     _cpfController,
-                                    _telefoneController)
+                                    _telefoneController,
+                                    _crmvController,
+                                    widget.tipoConta)
                             ),
 
-                            SizedBox(height: 60),
-
+                            SizedBox(height: 5.0),
                             SignUpButton(_cadastrar),
-                            SizedBox(height: 40),
+                            SizedBox(height: 40.0),
                             SignUpBottom()
 
                           ]),

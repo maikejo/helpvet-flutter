@@ -467,6 +467,9 @@ flutter:
     - images/helpvet.png
     - images/ic_pet_2.png
     - images/icons/ic_chatpet.png
+    - images/icons/ic_conta_vet.png
+    - images/icons/ic_conta_pet.png
+    - images/icons/ic_conta_clinica.png
 
   fonts:
     - family: SanFransisco

@@ -11,8 +11,11 @@ class User {
   final bool ativado;
   final String cpf;
   final String telefone;
+  final String crmv;
 
-  User({this.nome, this.email, this.imagemUrl, this.senha , this.tipo, this.dtCriacao, this.diasPlano, this.ativado,this.cpf,this.telefone});
+  User({this.nome,this.email,this.imagemUrl,this.senha,this.tipo,this.dtCriacao,
+        this.diasPlano,this.ativado,this.cpf,this.telefone,this.crmv}
+      );
 
   Map<String, Object> toJson() {
     return {
@@ -25,7 +28,8 @@ class User {
       'diasPlano' : diasPlano,
       'ativado' : ativado,
       'cpf': cpf,
-      'telefone': telefone
+      'telefone': telefone,
+      'crmv': crmv
     };
   }
 
@@ -41,6 +45,7 @@ class User {
         ativado: doc['ativado'],
         cpf: doc['cpf'],
         telefone: doc['telefone'],
+        crmv: doc['crmv']
     );
     return user;
   }
