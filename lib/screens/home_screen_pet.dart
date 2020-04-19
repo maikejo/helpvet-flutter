@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_finey/animation/fade_animation.dart';
 import 'package:flutter_finey/animation/fade_in_animation.dart';
 import 'package:flutter_finey/helper/size_config.dart';
@@ -26,12 +27,14 @@ import 'package:flutter_finey/styles/common_variables.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:network_image_to_byte/network_image_to_byte.dart';
+import 'package:provider/provider.dart';
 import '../config/application.dart';
 import '../config/routes.dart';
 import './common_widgets/finey_drawer.dart';
 import './home_widgets/home_header.dart';
 import './home_widgets/home_bar.dart';
 import 'chat_users_screen.dart';
+import 'chat_widgets/call_screens/provider/user_provider.dart';
 import 'common_widgets/responsive_image.dart';
 import 'descobrir_pet_screen.dart';
 import 'home_pet_widgets/home_editar_pet_screen.dart';
@@ -60,10 +63,17 @@ class _HomePetScreenState extends State<HomePetScreen> {
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   Uint8List byteDataImage;
+  UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.refreshUser();
+    });
+
     registerNotification();
     configLocalNotification();
     _recuperaUser();
@@ -136,7 +146,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
-      priority: Priority.High,
+      //priority: Priority.High,
       //icon: 'ic_launcher',
       largeIcon: 'ic_launcher',
       largeIconBitmapSource: BitmapSource.Drawable,

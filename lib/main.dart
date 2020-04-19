@@ -2,7 +2,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_finey/screens/chat_widgets/call_screens/provider/user_provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 import './config/routes.dart';
 import './config/application.dart';
 import './styles/common_colors.dart';
@@ -39,7 +41,12 @@ class MainAppState extends State<MainApp> {
       DeviceOrientation.portraitDown,
     ]);
 
-    final app = new MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider())
+      ],
+
+      child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Animal - Home Care',
       theme: new ThemeData(
@@ -49,9 +56,8 @@ class MainAppState extends State<MainApp> {
         dividerColor: Colors.white,
       ),
       onGenerateRoute: Application.router.generator,
+      ),
     );
-    // print("initial route = ${app.initialRoute}");
-    return app;
   }
 }
 

@@ -5,15 +5,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_finey/model/user.dart';
+import 'package:flutter_finey/screens/chat_widgets/call_screens/pickup/pickup_screen.dart';
 import 'package:flutter_finey/screens/home_screen_pet.dart';
 import 'package:flutter_finey/service/auth.dart';
+import 'package:flutter_finey/util/call_utilities.dart';
+import 'package:flutter_finey/util/permissions.dart';
+import 'package:provider/provider.dart';
+import 'chat_widgets/call_screens/pickup/pickup_layout.dart';
+import 'chat_widgets/call_screens/provider/user_provider.dart';
 import 'chat_widgets/chat_screen.dart';
 
 class ChatUsersScreen extends StatefulWidget {
-  ChatUsersScreen({@required this.idPet, this.idAcessoVetDono});
+  ChatUsersScreen({@required this.idPet, this.idAcessoVetDono,this.receiver});
 
   final String idPet;
   final String idAcessoVetDono;
+  final User receiver;
 
   _ChatUsersScreenState createState() => _ChatUsersScreenState();
 }
@@ -29,10 +38,33 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
   DatabaseReference myidRef = FirebaseDatabase.instance.reference().child('usuarios/maikejo@gmail.com');
   bool localIOnlineIndicator = false;
   StreamSubscription<Event> subscription;
+  User sender;
+  User receiver;
+  String _currentUserId;
 
   void getTipoUsuarioChat() async {
     String tipo = await Auth.geTipo(Auth.user.email);
     setState(() {
+
+      Auth.getCurrentFirebaseUser().then((user) {
+        _currentUserId = user.email;
+
+        setState(() {
+          sender = User(
+            email: 'veterinario@vet.com',
+            nome: 'Vet',
+            imagemUrl: 'https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Fposts%2F1585517481889?alt=media&token=5e049c67-9463-4ea5-87bb-72722075c408',
+          );
+
+          receiver = User(
+            email: 'teste@teste.com',
+            nome: 'Teste',
+            imagemUrl: 'https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/administrador%40adm.com%2Favatar%2Favatar?alt=media&token=b459a478-bb2c-4e18-9a5d-5938054fac46'
+          );
+
+        });
+      });
+
       _tipo = tipo;
 
       if(_tipo == "VET"){
@@ -57,11 +89,14 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
 
   }
 
+  UserProvider userProvider;
+
   @override
   void initState() {
     connectedlistRef = FirebaseDatabase.instance.reference().child('.info/connected');
-    subscription = connectedlistRef.onValue.listen(handlerFunctionOnline);
+    //subscription = connectedlistRef.onValue.listen(handlerFunctionOnline);
     super.initState();
+
     getTipoUsuarioChat();
   }
 
@@ -72,7 +107,7 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
     subscription?.cancel();
   }
 
-  void handlerFunctionOnline(Event event) {
+  /*void handlerFunctionOnline(Event event) {
     DataSnapshot dataSnapshot = event.snapshot;
     bool myStatus = dataSnapshot.value;
     print(myStatus);// (.info/connected) returns true if you are connected to Firebase otherwise it will be false
@@ -89,12 +124,12 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
        myidRef.onDisconnect().set({
          'user': Auth.user.email,
         'online': false
-       /* 'dtOnline': ServerValue.timestamp,*/
+       *//* 'dtOnline': ServerValue.timestamp,*//*
       }).then((a) {
         myidRef.update({
           'user': Auth.user.email,
           'online': true
-         /* 'dtOnline': ServerValue.timestamp*/
+         *//* 'dtOnline': ServerValue.timestamp*//*
         });
       });
 
@@ -102,7 +137,7 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
         localIOnlineIndicator = true;
       });
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -180,9 +215,19 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
 
 
 
-                                /*new Icon(
-                                    Icons.add_alert,
-                                    color: Colors.pinkAccent),*/
+                               /* IconButton(
+                                  icon: Icon(
+                                    Icons.video_call,
+                                  ),
+                                  onPressed: () async =>
+                                  await Permissions.cameraAndMicrophonePermissionsGranted()
+                                      ? CallUtils.dial(
+                                    from: sender,
+                                    to: receiver,
+                                    context: context,
+                                  )
+                                      : {},
+                                ),*/
                               ],
                             ),
 
