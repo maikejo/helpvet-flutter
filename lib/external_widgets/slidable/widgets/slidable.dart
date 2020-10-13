@@ -792,10 +792,10 @@ class SlidableState extends State<Slidable>
   void initState() {
     super.initState();
     _overallMoveController =
-        new AnimationController(duration: widget.movementDuration, vsync: this)
+        new AnimationController(duration: widget.movementDuration, value: this)
           ..addStatusListener(_handleDismissStatusChanged);
     _actionsMoveController =
-        new AnimationController(duration: widget.movementDuration, vsync: this)
+        new AnimationController(duration: widget.movementDuration, value: this)
           ..addStatusListener(_handleShowAllActionsStatusChanged);
   }
 
@@ -1040,7 +1040,7 @@ class SlidableState extends State<Slidable>
       _handleDismiss();
     } else {
       _resizeController = new AnimationController(
-          duration: slideToDismissDelegate.resizeDuration, vsync: this)
+          duration: slideToDismissDelegate.resizeDuration, value: this)
         ..addListener(_handleResizeProgressChanged)
         ..addStatusListener((AnimationStatus status) => updateKeepAlive());
       _resizeController.forward();

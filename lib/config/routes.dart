@@ -5,11 +5,11 @@
  * Copyright (c) 2018 Posse Productions LLC. All rights reserved.
  * See LICENSE for distribution and usage details.
  */
-import 'package:fluro/fluro.dart';
-import 'package:flutter/material.dart';
 
+import 'package:fluro/fluro.dart';
 import '../screens/login_screen.dart';
 import './route_handlers.dart';
+import 'package:flutter/material.dart' hide Router;
 
 class RouteConstants {
   static const String ROUTE_LOGIN = "/login";

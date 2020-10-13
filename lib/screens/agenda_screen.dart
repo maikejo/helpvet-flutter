@@ -576,7 +576,7 @@ class _AgendaScreenState extends State<AgendaScreen> with TickerProviderStateMix
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: ListTile(
             leading: tipoUser == 'VET' ? Badge(
-              position: BadgePosition.topLeft(),
+              position: BadgePosition.topStart(),
               badgeColor: Colors.green,
               badgeContent: Container(
                 width: 15,
@@ -615,7 +615,7 @@ class _AgendaScreenState extends State<AgendaScreen> with TickerProviderStateMix
                     }),
               ),
             ) : Badge(
-              position: BadgePosition.topLeft(),
+              position: BadgePosition.topStart(),
               badgeColor: Colors.green,
               badgeContent: Container(
                 width: 15,

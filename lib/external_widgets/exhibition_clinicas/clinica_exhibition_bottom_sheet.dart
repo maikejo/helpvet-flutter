@@ -37,7 +37,7 @@ class _ClinicaExhibitionBottomSheetState extends State<ClinicaExhibitionBottomSh
   void initState() {
     super.initState();
     _controller = AnimationController(
-      vsync: this,
+      value: this,
       duration: Duration(milliseconds: 600),
     );
   }
