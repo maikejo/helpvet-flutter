@@ -20,7 +20,7 @@ class MainApp extends StatefulWidget {
 class MainAppState extends State<MainApp> {
 
   MainAppState({Key key}) {
-    var router = new Router();
+    var router = new FluroRouter();
     Routes.configureRoutes(router);
     Application.router = router;
   }

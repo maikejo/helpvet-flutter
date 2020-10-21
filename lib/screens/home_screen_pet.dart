@@ -431,7 +431,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                                         ),
                                                       ),
                                                       Badge(
-                                                        position: BadgePosition.bottomStart(),
+                                                        position: BadgePosition.bottomLeft(),
                                                         badgeColor: Colors.green,
                                                         badgeContent: Container(
                                                           width: 40,
@@ -809,7 +809,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                                   ),
                                                 ),
                                                FadeIn(1, Badge(
-                                                  position: BadgePosition.bottomStart(),
+                                                  position: BadgePosition.bottomLeft(),
                                                   badgeColor: Colors.green,
                                                   badgeContent: Container(
                                                     width: 40,
