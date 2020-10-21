@@ -22,7 +22,7 @@ class GetAccountInfo {
           "tapi_nonce": timeStamp.toString()
         },
         options: Options(
-            contentType: ContentType.parse("application/x-www-form-urlencoded"),
+            contentType: "application/x-www-form-urlencoded",
             headers: {
               'TAPI-ID': '58ba4016e6fd04a279540b4b406b79bb',
               'TAPI-MAC': signature
