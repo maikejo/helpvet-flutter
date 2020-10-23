@@ -39,7 +39,8 @@ matrix:
         - chmod +x /home/travis/build/maikejo/helpvet-flutter/android/gradlew
       script:
         # EXECUTA SCRIPT PARA BUILD DO APPBUNDLE RELEASE
-        - flutter build appbundle --build-number=$TRAVIS_BUILD_NUMBER --release
+        #- flutter build appbundle --build-number=$TRAVIS_BUILD_NUMBER --release
+        - flutter build appbundle --build-number=12 --release
         - gem install bundler && cd android && bundle install && cd ..
         - cd android
         # EXECUTA LANE PARA DEPLOY NO GOOGLE PLAY
