@@ -353,11 +353,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
                             showModalBottomSheet(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(35.0),
                                 ),
                                 context: context,
                                 builder: (BuildContext context) {
-
                                   return FaqScreen();
                                 }
                             );
