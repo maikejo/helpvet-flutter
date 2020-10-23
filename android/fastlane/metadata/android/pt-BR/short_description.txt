@@ -1,1 +1,1 @@
-Pet Home Care
+HelpVet é um aplicativo para gerenciar a vida de seu pet.

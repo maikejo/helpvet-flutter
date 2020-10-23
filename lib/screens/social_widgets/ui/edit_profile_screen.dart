@@ -214,7 +214,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       imageFile = selectedImage;
                     });
                     compressImage();
-                    _repository.uploadImageToStorage(imageFile).then((url) {
+                    _repository.uploadImageToStorage(imageFile,null).then((url) {
                       _repository.updatePhoto(url, currentUser.uid).then((v) {
                         Navigator.pop(context);
                       });
@@ -230,7 +230,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       imageFile = selectedImage;
                     });
                     compressImage();
-                    _repository.uploadImageToStorage(imageFile).then((url) {
+                    _repository.uploadImageToStorage(imageFile,null).then((url) {
                       _repository.updatePhoto(url, currentUser.uid).then((v) {
                         Navigator.pop(context);
                       });

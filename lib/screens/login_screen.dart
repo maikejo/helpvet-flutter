@@ -22,6 +22,7 @@ import './login_widgets/login_form.dart';
 import '../config/application.dart';
 import '../config/routes.dart';
 import '../styles/common_variables.dart';
+import 'escolher_signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key, this.title}) : super(key: key);
@@ -74,6 +75,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   void _dismissDialog() {
     Navigator.pop(context);
+  }
+
+  void _redirectEscolherSignup() {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(35.0),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return EscolherSignupScreen();
+        }
+    );
   }
 
   void _showDialogAtivacao() {
@@ -229,11 +242,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     }
   }
 
-  void _handleSignUp() {
-    Application.router.navigateTo(context, RouteConstants.ROUTE_SIGN_UP,
-        transition: TransitionType.fadeIn);
-  }
-
   _onChangedRemenber(bool value) async {
     sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
@@ -330,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 ResponsivePadding(
                     padding: const EdgeInsets.only(top: 30.0),
                     child: LoginBottom(
-                      handleSignUp: _handleSignUp,
+                      handleSignUp: _redirectEscolherSignup,
                     )),
 
                 Center(
@@ -345,11 +353,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
                             showModalBottomSheet(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(35.0),
                                 ),
                                 context: context,
                                 builder: (BuildContext context) {
-
                                   return FaqScreen();
                                 }
                             );

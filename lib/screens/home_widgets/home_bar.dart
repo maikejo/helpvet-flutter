@@ -20,9 +20,8 @@ class HomeBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-
-      child: Scaffold(
+    return Scaffold(
+        extendBody: true,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FadeAnimation(3,FloatingActionButton(
             heroTag: "bt1",
@@ -31,10 +30,10 @@ class HomeBar extends StatelessWidget {
             onPressed: this.handleClickAddPetButton)),
         bottomNavigationBar: BottomBar(handleClickChatButton: this.handleClickChatButton,
           handleClickAddPetButton: this.handleClickAddPetButton,
-          handleClickMainButton: this.handleClickChatButton,
+          handleClickMainButton: this.handleClickMainButton,
           handleClickLocalizacaoButton: this.handleClickLocalizacaoButton,
           handleClickBoneButton: this.handleClickBoneButton),
-      ),
-    );
+      );
+
   }
 }

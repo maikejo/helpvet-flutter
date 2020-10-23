@@ -35,7 +35,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     print("RCID : ${widget.receiverUid}");
     _repository.getCurrentUser().then((user) {
       setState(() {
-        _senderuid = user.uid;
+        _senderuid = user.email;
       });
       _repository.fetchUserDetailsById(_senderuid).then((user) {
         setState(() {
@@ -161,14 +161,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   Future<void> pickImage({String source}) async {
-    var selectedImage = await ImagePicker.pickImage(
+    var selectedImage = await ImagePicker.pickImage(maxHeight: 480, maxWidth: 640,
         source: source == 'Gallery' ? ImageSource.gallery : ImageSource.camera);
 
     setState(() {
       imageFile = selectedImage;
     });
-    compressImage();
-    _repository.uploadImageToStorage(imageFile).then((url) {
+    //compressImage();
+    _repository.uploadImageToStorage(imageFile,null).then((url) {
       print("URL: $url");
       _repository.uploadImageMsgToDb(url, widget.receiverUid, _senderuid);
     });

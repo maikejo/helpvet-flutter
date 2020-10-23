@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_finey/animation/fade_animation.dart';
 import 'package:flutter_finey/animation/fade_in_animation.dart';
 import 'package:flutter_finey/helper/size_config.dart';
@@ -26,12 +27,14 @@ import 'package:flutter_finey/styles/common_variables.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:network_image_to_byte/network_image_to_byte.dart';
+import 'package:provider/provider.dart';
 import '../config/application.dart';
 import '../config/routes.dart';
 import './common_widgets/finey_drawer.dart';
 import './home_widgets/home_header.dart';
 import './home_widgets/home_bar.dart';
 import 'chat_users_screen.dart';
+import 'chat_widgets/call_screens/provider/user_provider.dart';
 import 'common_widgets/responsive_image.dart';
 import 'descobrir_pet_screen.dart';
 import 'home_pet_widgets/home_editar_pet_screen.dart';
@@ -59,11 +62,18 @@ class _HomePetScreenState extends State<HomePetScreen> {
   final db = Firestore.instance;
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  Uint8List byteDataImage;
+  ByteData byteDataImage;
+  UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.refreshUser();
+    });
+
     registerNotification();
     configLocalNotification();
     _recuperaUser();
@@ -71,17 +81,17 @@ class _HomePetScreenState extends State<HomePetScreen> {
   }
 
   Future<Uint8List> _networkImageToByte() async {
-    Uint8List byteImage = await networkImageToByte('https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Favatar_pet%2Favatar_pet?alt=media&token=8932220f-3d61-4a63-84ea-521822f46861');
-
+    Uint8List byteImage = await networkImageToByte('https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Favatar%2Favatar?alt=media&token=20211314-7b4b-4c44-9c33-d5c3333548cc');
+    ByteData byteData = byteImage.buffer.asByteData();
     setState(() {
-      byteDataImage = byteImage;
+      byteDataImage = byteData;
     });
 
     return byteImage;
   }
 
   void _compartilharFoto() async{
-    await Share.file('Meu pet usa - HelpVet App', 'pet.png', byteDataImage, 'image/png', text: 'Meu pet usa - HelpVet App');
+    await Share.file('Meu pet usa - HelpVet App', 'pet.png', byteDataImage.buffer.asInt8List(), 'image/png', text: 'Meu pet usa o aplicativo - HelpVet App');
   }
 
   void registerNotification() {
@@ -136,7 +146,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
       playSound: true,
       enableVibration: true,
       importance: Importance.Max,
-      priority: Priority.High,
+      //priority: Priority.High,
       //icon: 'ic_launcher',
       largeIcon: 'ic_launcher',
       largeIconBitmapSource: BitmapSource.Drawable,
@@ -748,8 +758,8 @@ class _HomePetScreenState extends State<HomePetScreen> {
                         FutureBuilder(
                             future: CadastroPetService.getCadastroPet(Auth.user.email,widget.idPet),
                             builder: (BuildContext context, AsyncSnapshot<CadastroPet> snapshot) {
-                              if (snapshot.data != null) {
 
+                              if (snapshot.data != null) {
                                 int idade = calcularIdade(snapshot.data.dataNascimento.toDate());
 
                                 return Center(
@@ -758,9 +768,9 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: <Widget>[
                                       FadeIn(1,Container(
-                                        padding: EdgeInsets.only(top: 16),
+                                        //padding: EdgeInsets.only(bottom: 16),
                                         width: MediaQuery.of(context).size.width,
-                                        height: sizeConfig.dynamicScaleSize(size: 255),
+                                        height: sizeConfig.dynamicScaleSize(size: 250),
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
                                             begin: Alignment.topCenter,
@@ -844,7 +854,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                               ],
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 21, bottom: 25),
+                                              padding: const EdgeInsets.only(bottom: 54),
                                               child: Text(
                                                 snapshot.data.nome,
                                                 style: TextStyle(
@@ -858,12 +868,10 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                               decoration: BoxDecoration(
                                                 color: Color(0xFF162A49),
                                                 borderRadius: BorderRadius.only(
-                                                  bottomRight: Radius.circular(18),
-                                                  bottomLeft: Radius.circular(18)
+                                                bottomRight: Radius.circular(45),
+                                                bottomLeft: Radius.circular(45)
                                                 ),
                                               ),
-                                              height: 50.0,
-                                              padding: const EdgeInsets.all(1.0),
 
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

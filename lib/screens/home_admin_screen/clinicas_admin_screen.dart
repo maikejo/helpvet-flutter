@@ -246,7 +246,7 @@ class _ClinicasAdminScreenState extends State<ClinicasAdminScreen> {
                                                     backgroundColor: Colors.blueAccent,
                                                     icon: const Icon(Icons.add_location),
                                                     onPressed: () {
-                                                      _enderecoController.text = selectedPlace.address;
+                                                      _enderecoController.text = selectedPlace.adrAddress;
                                                       latitude = selectedPlace.geometry.location.lat;
                                                       longitude = selectedPlace.geometry.location.lng;
 
@@ -275,7 +275,7 @@ class _ClinicasAdminScreenState extends State<ClinicasAdminScreen> {
                                   ),
                                   selectedPlace == null
                                       ? Container()
-                                      : Text(selectedPlace.address ?? ""),
+                                      : Text(selectedPlace.adrAddress ?? ""),
                                 ],
                               ),
 

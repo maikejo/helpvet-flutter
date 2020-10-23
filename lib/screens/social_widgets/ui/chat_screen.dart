@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           builder: ((context) => ChatDetailScreen(
                                 photoUrl: usersList[index].photoUrl,
                                 name: usersList[index].displayName,
-                                receiverUid: usersList[index].uid,
+                                receiverUid: usersList[index].email,
                               ))));
                 },
                 child: ListTile(
@@ -125,7 +125,7 @@ class ChatSearch extends SearchDelegate<String> {
                       builder: ((context) => ChatDetailScreen(
                             photoUrl: suggestionsList[index].photoUrl,
                             name: suggestionsList[index].displayName,
-                            receiverUid: suggestionsList[index].uid,
+                            receiverUid: suggestionsList[index].email,
                           ))));
             },
             leading: CircleAvatar(

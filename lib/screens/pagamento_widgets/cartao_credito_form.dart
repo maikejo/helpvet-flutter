@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_cielo/flutter_cielo.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:flutter_finey/config/application.dart';
 import 'package:flutter_finey/config/routes.dart';
@@ -101,12 +100,12 @@ class _CartaoCreditoFormState extends State<CartaoCreditoForm> {
   }
 
   //inicia objeto da api
-  final CieloEcommerce cielo = CieloEcommerce(
+/*  final CieloEcommerce cielo = CieloEcommerce(
       environment: Environment.SANDBOX, // ambiente de desenvolvimento
       merchant: Merchant(
         merchantId: "3f075fcb-411b-4b9e-b7fc-677d04f8c303",
         merchantKey: "DXCINPEBTOVDEMQBFFADXXILLAXCFGZFHMNMYMUF",
-      ));
+      ));*/
 
 
   _dismissDialog() {
@@ -124,7 +123,7 @@ class _CartaoCreditoFormState extends State<CartaoCreditoForm> {
     );
   }
 
-  void realizarCompra() async{
+ /* void realizarCompra() async{
     //Objeto de venda
     Sale sale = Sale(
         merchantOrderId: "123", // id único de sua venda
@@ -172,7 +171,7 @@ class _CartaoCreditoFormState extends State<CartaoCreditoForm> {
     }
   }
 
-
+*/
   void textFieldFocusDidChange() {
     creditCardModel.isCvvFocused = cvvFocusNode.hasFocus;
     onCreditCardModelChange(creditCardModel);
@@ -329,7 +328,7 @@ class _CartaoCreditoFormState extends State<CartaoCreditoForm> {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               margin: const EdgeInsets.only(left: 16, top: 50, right: 16),
-              child:  CartaoCreditoButton(realizarCompra),
+              child:  CartaoCreditoButton(null),
             ),
           ],
         ),

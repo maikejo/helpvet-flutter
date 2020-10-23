@@ -11,7 +11,6 @@ import 'package:flutter_finey/screens/social_widgets/ui/comments_screen.dart';
 import 'package:flutter_finey/screens/social_widgets/ui/insta_friend_profile_screen.dart';
 import 'package:flutter_finey/screens/social_widgets/ui/likes_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'insta_add_screen.dart';
 
 class InstaFeedScreen extends StatefulWidget {
@@ -85,7 +84,6 @@ class _InstaFeedScreenState extends State<InstaFeedScreen> {
               },
             ),
           ),
-
         ],
       ),
       body: currentUser != null

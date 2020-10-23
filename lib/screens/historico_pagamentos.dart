@@ -22,6 +22,8 @@ class HistoricoPagamentosScreen extends StatefulWidget {
 
 class _HistoricoPagamentosScreenState extends State<HistoricoPagamentosScreen> {
 
+  List<Color> gradientColor = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

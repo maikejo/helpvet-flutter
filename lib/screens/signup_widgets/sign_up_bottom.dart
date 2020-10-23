@@ -14,13 +14,18 @@ class SignUpBottom extends StatelessWidget {
       new Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: new Text("Possui uma conta?",
-              style: CommonStyles(context: context).getBlackNormalText())),
+              style: new TextStyle(
+              fontSize: 25.0,
+              color: Colors.black,
+              ),
+          )
+      ),
       LinkButtonWidget(
           text: "Entrar",
           onTap: () {
-            Application.router.navigateTo(context, RouteConstants.ROUTE_LOGIN,
-                transition: TransitionType.fadeIn);
+            Application.router.navigateTo(context, RouteConstants.ROUTE_LOGIN, transition: TransitionType.fadeIn);
           })
+
     ]);
   }
 }

@@ -1,3 +1,0 @@
-# this config file is currently only required by gitlab
-ENV["CI_SERVER"] = "gitlab"
-ENV["CI_PROJECT_ID"] = "26"

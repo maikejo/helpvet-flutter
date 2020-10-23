@@ -21,7 +21,7 @@ class Repository {
 
   //Future<void> signOut() => _firebaseProvider.signOut();
 
-  Future<String> uploadImageToStorage(File imageFile) => _firebaseProvider.uploadImageToStorage(imageFile);
+  Future<String> uploadImageToStorage(File imageFile,String email) => _firebaseProvider.uploadImageToStorage(imageFile,email);
 
   Future<void> addPostToDb(User currentUser, String imgUrl, String caption, String location) => _firebaseProvider.addPostToDb(currentUser, imgUrl, caption, location);
   

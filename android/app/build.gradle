@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '7'
+    throw new GradleException("versionCode not found. Define flutter.versionCode in the local.properties file.")
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '7.0.0'
+    throw new GradleException("versionName not found. Define flutter.versionName in the local.properties file.")
 }
 
 apply plugin: 'com.android.application'
@@ -34,11 +34,17 @@ android {
 
     signingConfigs {
         release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+       /* release {
             keyAlias keystoreProperties['pethomecare']
             keyPassword keystoreProperties['pethomecare']
             storeFile keystoreProperties['C:\\Projetos\\FLUTTER\\helpvet-flutter\\pethomecare_release.jks']
             storePassword keystoreProperties['pethomecare']
-        }
+        }*/
     }
 
     /*signingConfigs {
@@ -75,7 +81,7 @@ android {
 
      buildTypes {
          release {
-             signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
+             signingConfig signingConfigs.release
              minifyEnabled true
              useProguard true
              multiDexEnabled true
@@ -83,6 +89,17 @@ android {
              proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
          }
      }
+
+    /*flavorDimensions "default"
+    productFlavors {
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+        }
+        prod {
+            dimension "default"
+        }
+    }*/
 }
 
 flutter {
@@ -95,5 +112,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     api 'com.google.firebase:firebase-ml-vision-image-label-model:17.0.2'
     api 'com.google.firebase:firebase-ml-vision-face-model:17.0.2'
+    api 'com.google.firebase:firebase-analytics:17.3.0'
+    api 'com.google.firebase:firebase-crashlytics:17.0.0-beta03'
+    api 'com.google.firebase:firebase-perf:18.0.1'
 }
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.firebase-perf'

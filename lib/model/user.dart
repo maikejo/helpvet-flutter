@@ -1,18 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  final String nome;
+  String nome;
   String email;
-  final String imagemUrl;
-  final String senha;
-  final String tipo;
-  final Timestamp dtCriacao;
-  final int diasPlano;
-  final bool ativado;
-  final String cpf;
-  final String telefone;
+  String imagemUrl;
+   String senha;
+   String tipo;
+   Timestamp dtCriacao;
+   int diasPlano;
+   bool ativado;
+   String cpf;
+   String telefone;
+   String crmv;
 
-  User({this.nome, this.email, this.imagemUrl, this.senha , this.tipo, this.dtCriacao, this.diasPlano, this.ativado,this.cpf,this.telefone});
+  User({this.nome,this.email,this.imagemUrl,this.senha,this.tipo,this.dtCriacao,
+        this.diasPlano,this.ativado,this.cpf,this.telefone,this.crmv}
+      );
 
   Map<String, Object> toJson() {
     return {
@@ -25,7 +28,8 @@ class User {
       'diasPlano' : diasPlano,
       'ativado' : ativado,
       'cpf': cpf,
-      'telefone': telefone
+      'telefone': telefone,
+      'crmv': crmv
     };
   }
 
@@ -41,6 +45,7 @@ class User {
         ativado: doc['ativado'],
         cpf: doc['cpf'],
         telefone: doc['telefone'],
+        crmv: doc['crmv']
     );
     return user;
   }
@@ -48,4 +53,20 @@ class User {
   factory User.fromDocument(DocumentSnapshot doc) {
     return User.fromJson(doc.data);
   }
+
+  // Named constructor
+  User.fromMap(Map<String, dynamic> mapData) {
+    this.nome = mapData['nome'];
+    this.email= mapData['email'];
+    this.imagemUrl= mapData['imagemUrl'];
+  /*  this.senha= mapData['senha'];
+    this.tipo= mapData['tipo'];
+    this.dtCriacao= mapData['dtCriacao'];
+    this.diasPlano= mapData['diasPlano'];
+    this.ativado= mapData['ativado'];
+    this.cpf= mapData['cpf'];
+    this.telefone= mapData['telefone'];*/
+    //this.crmv= mapData['crmv'];
+  }
+
 }

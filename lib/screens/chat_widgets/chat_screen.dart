@@ -5,15 +5,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_finey/model/chat.dart';
+import 'package:flutter_finey/model/user.dart';
+import 'package:flutter_finey/screens/chat_widgets/call_screens/provider/user_provider.dart';
 import 'package:flutter_finey/service/auth.dart';
+import 'package:flutter_finey/util/call_utilities.dart';
 import 'package:flutter_finey/util/dialog.dart';
+import 'package:flutter_finey/util/permissions.dart';
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'call_screens/pickup/pickup_layout.dart';
 import 'full_screen_image.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChatScreen extends StatefulWidget {
   String name;
@@ -48,12 +56,36 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final String serverToken = 'AAAA_Z6kcx0:APA91bFBB7obavZseCgN3jRuhM0EnCWh4MyLYjyhNbs22HGlUncXZu3a_C-3xgVPTloJ8u9tSbp3hnWYwsZfURJoKshBGMHRwnbqa8MRQPilsj3z1UbA6Vc0LtJ5pi3XZzggcc-Yr9R7';
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  UserProvider userProvider;
+
+  User sender;
+  User receiver;
+  String _currentUserId;
 
   @override
   void initState() {
     super.initState();
-
+    initPlatformState();
     //readLocal();
+
+    Auth.getCurrentFirebaseUser().then((user) {
+      _currentUserId = user.email;
+
+      setState(() {
+        sender = User(
+          email: 'veterinario@vet.com',
+          nome: 'Vet',
+          imagemUrl: 'https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Fposts%2F1585517481889?alt=media&token=5e049c67-9463-4ea5-87bb-72722075c408',
+        );
+
+        receiver = User(
+            email: 'maikejo@gmail.com',
+            nome: 'Teste',
+            imagemUrl: 'https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/administrador%40adm.com%2Favatar%2Favatar?alt=media&token=b459a478-bb2c-4e18-9a5d-5938054fac46'
+        );
+
+      });
+    });
 
     _messageController = TextEditingController();
     getUID().then((user) {
@@ -80,6 +112,11 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     super.dispose();
     subscription?.cancel();
+  }
+
+  Future<void> initPlatformState() async {
+    await [Permission.camera, Permission.microphone, Permission.storage]
+        .request();
   }
 
   readLocal() async {
@@ -116,35 +153,57 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomPadding: true,
-        appBar: AppBar(
-          backgroundColor: Colors.pinkAccent,
-          title: Text(widget.name),
-        ),
-        body: Form(
-          key: _formKey,
-          child: _senderuid == null
-              ? Container(
-                  child: CircularProgressIndicator(),
-                )
-              : Column(
-                  children: <Widget>[
-                    //buildListLayout(),
-                    ChatMessagesListWidget(),
-                    Divider(
-                      height: 20.0,
-                      color: Colors.black,
-                    ),
-                    ChatInputWidget(),
-                    SizedBox(
-                      height: 10.0,
-                    )
-                  ],
-                ),
-        )
 
+    return PickupLayout(
+      scaffold: Scaffold(
+          resizeToAvoidBottomPadding: true,
+          appBar: AppBar(
+            backgroundColor: Colors.pinkAccent,
+            title: Text(widget.name),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.video_call,
+                  ),
+                  onPressed: () async =>
+                  await Permissions.cameraAndMicrophonePermissionsGranted()
+                      ? CallUtils.dial(
+                    from: sender,
+                    to: receiver,
+                    context: context,
+                  )
+                      : {},
+                ),
+              ),
+            ],
+          ),
+
+          body: Form(
+            key: _formKey,
+            child: _senderuid == null
+                ? Container(
+              child: CircularProgressIndicator(),
+            )
+                : Column(
+              children: <Widget>[
+                //buildListLayout(),
+                ChatMessagesListWidget(),
+                Divider(
+                  height: 20.0,
+                  color: Colors.black,
+                ),
+                ChatInputWidget(),
+                SizedBox(
+                  height: 10.0,
+                )
+              ],
+            ),
+          ),
+      ),
     );
+
   }
 
   Widget ChatInputWidget() {
@@ -319,7 +378,7 @@ class _ChatScreenState extends State<ChatScreen> {
           } else {
             listItem = snapshot.data.documents;
             return ListView.builder(
-              reverse: true,
+              reverse: false,
               padding: EdgeInsets.all(10.0),
               itemBuilder: (context, index) =>
                   chatMessageItem(snapshot.data.documents[index]),
