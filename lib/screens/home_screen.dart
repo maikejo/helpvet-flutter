@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           //VISUALIZA PERFIL DO CLIENTE
           FadeAnimation(1, Container(
                 width: MediaQuery.of(context).size.width,
-                height: sizeConfig.dynamicScaleSize(size: 600.0),
+                height: MediaQuery.of(context).size.height,
                 child: ListView(
                   children: <Widget>[
                     StreamBuilder<QuerySnapshot>(
@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           : FadeAnimation(1, Container(
                 width: MediaQuery.of(context).size.width,
-                height: sizeConfig.dynamicScaleSize(size: 600.0),
+                height: MediaQuery.of(context).size.height,
                 child: ListView(
                   children: <Widget>[
 
@@ -150,13 +150,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
         ]);
 
-    var constrainedBox = new ConstrainedBox(
-        constraints: constraints.copyWith(maxHeight: MediaQuery.of(context).size.height),
+    var scrollView = new SingleChildScrollView(
         child: new Container(
           color: Colors.white,
-          child: column));
-
-    var scrollView = new SingleChildScrollView(child: constrainedBox);
+          child: column)
+    );
 
     return scrollView;
   }

@@ -57,14 +57,15 @@ class ExploreWidget extends StatelessWidget {
                 children: [
                   Positioned(
                       top: realH(40 + (-5 * currentExplorePercent)),
-                      left: realW(45 + (971 - 49) * currentExplorePercent),
+                      left: realW(55 + (971 - 49) * currentExplorePercent),
                       child: Text(
                         "Clínicas",
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize:
-                                realW(18 + (32 - 18) * currentExplorePercent)),
-                      )),
+                            fontSize: realW(18 + (32 - 18) * currentExplorePercent)),
+                        textAlign: TextAlign.center,
+                      )
+                  ),
 
                   Positioned(
                       top: realH(currentExplorePercent < 0.9

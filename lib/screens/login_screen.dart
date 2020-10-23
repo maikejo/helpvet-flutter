@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   void _redirectEscolherSignup() {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(35.0),
         ),
         context: context,
         builder: (BuildContext context) {

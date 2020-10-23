@@ -53,15 +53,12 @@ class _SignupScreenState extends State<SignupScreen> {
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(_fileController);
     _urlAvatarController =
     await (await uploadTask.onComplete).ref.getDownloadURL();
-
   }
 
   void _showDialog() {
-    // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           title: new Text("Sucesso"),
           content: new Text("Cadastro realizado com sucesso!"),
@@ -75,7 +72,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     clearStack: true,
                     replace: true,
                     transition: TransitionType.fadeIn);
-                ;
               },
             ),
           ],
@@ -122,7 +118,6 @@ class _SignupScreenState extends State<SignupScreen> {
               cpf: _cpfController.text,
               telefone: _telefoneController.text,
               crmv: _crmvController.text
-
           ));
 
           Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
@@ -144,7 +139,6 @@ class _SignupScreenState extends State<SignupScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return object of type Dialog
         return AlertDialog(
           title: new Text("Erro"),
           content: new Text("Informe uma foto para seu perfil!"),
@@ -190,8 +184,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 width: 100.0,
                                 child: new CircleAvatar(
                                   radius: 80.0,
-                                  backgroundImage: AssetImage(
-                                      "images/icons/ic_camera.png"),
+                                  backgroundImage: AssetImage("images/icons/ic_camera.png"),
                                 ),
                               ),
                             ],
@@ -237,23 +230,18 @@ class _SignupScreenState extends State<SignupScreen> {
                             SignUpButton(_cadastrar),
                             SizedBox(height: 40.0),
                             SignUpBottom()
-
                           ]),
-
                     ),
 
                   ]))
         ]);
 
     var constrainedBox = ConstrainedBox(
-        constraints:
-            constraints.copyWith(maxHeight: MediaQuery.of(context).size.height),
+        constraints: constraints.copyWith(maxHeight: MediaQuery.of(context).size.height),
         child: Container(
             color: Colors.white,
-            padding: EdgeInsets.only(
-                bottom:
-                    CommonVariables(context: context).getScreenPaddingBottom()),
-            child: column));
+            child: column)
+    );
 
     var scrollView = SingleChildScrollView(child: constrainedBox);
 

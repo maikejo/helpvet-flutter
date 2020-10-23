@@ -16,7 +16,7 @@ dependencies:
   rxdart: ^0.23.1
   dson: ^0.15.1
   scoped_model: ^0.3.0
-  image_picker: ^0.6.2+3
+  image_picker: ^0.6.7+12
   video_player: ^0.10.5
   dio: ^3.0.10
   intl: ^0.16.1
@@ -36,9 +36,9 @@ dependencies:
   async_loader: ^0.1.1
   flutter_speed_dial: ^1.2.1
   shared_preferences: ^0.5.3+4
-  google_maps_flutter: ^0.5.21+15
+  google_maps_flutter: ^1.0.3
   location: ^2.3.5
-  geolocator: ^5.1.3
+  geolocator: ^6.1.1
   google_maps_webservice: ^0.0.14
   provider: ^4.0.2
   path_provider: ^1.6.0
@@ -73,12 +73,12 @@ dependencies:
   font_awesome_flutter: ^8.5.0
   geoflutterfire: ^2.0.3+8
   image: ^2.1.4
-  google_maps_place_picker: ^0.3.0
+  google_maps_place_picker: ^1.0.0
   simple_image_crop: ^0.1.3
   geocoder: ^0.2.1
   fledge: ^0.1.3
   agora_rtc_engine: ^1.0.8
-  permission_handler: 3.0.0
+  permission_handler: ^5.0.1+1
 
 dev_dependencies:
   flutter_test:
@@ -469,6 +469,8 @@ flutter:
     - images/icons/ic_conta_vet.png
     - images/icons/ic_conta_pet.png
     - images/icons/ic_conta_clinica.png
+    - images/icons/ic_menu_tres_pontos.png
+    - images/icons/ic_track_pet.png
 
   fonts:
     - family: SanFransisco

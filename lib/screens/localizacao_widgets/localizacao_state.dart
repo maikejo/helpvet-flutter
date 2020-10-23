@@ -24,7 +24,7 @@ class LocalizacaoState with ChangeNotifier {
   LocalizacaoState() {
    // _getUserLocation();
   }
-// ! TO GET THE USERS LOCATION
+/*// ! TO GET THE USERS LOCATION
   void _getUserLocation() async {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -34,7 +34,7 @@ class LocalizacaoState with ChangeNotifier {
     print("initial position is : ${_initialPosition.toString()}");
     locationController.text = placemark[0].name;
     notifyListeners();
-  }
+  }*/
 
   // ! TO CREATE ROUTE
   void createRoute(String encondedPoly) {

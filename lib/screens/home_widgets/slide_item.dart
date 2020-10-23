@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finey/screens/common_widgets/responsive_padding.dart';
+import 'package:flutter_finey/screens/localizacao_screen.dart';
 
 class SlideItem extends StatefulWidget {
 
@@ -28,10 +29,10 @@ class _SlideItemState extends State<SlideItem> {
     return Padding(
       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
-        height: MediaQuery.of(context).size.height / 2.6,
-        width: MediaQuery.of(context).size.width / 1.2,
+        height: MediaQuery.of(context).size.height / 3.9,
+        width: MediaQuery.of(context).size.width / 1.5,
         child: Card(
-          color: Color(0xFF162A49),
+          color: Colors.white,
           shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(20.0)),
           elevation: 3.0,
           child: Column(
@@ -39,7 +40,8 @@ class _SlideItemState extends State<SlideItem> {
               Stack(
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height/3.9,
+                    padding: const EdgeInsets.only(top: 40.0),
+                    height: MediaQuery.of(context).size.height/5.9,
                     width: MediaQuery.of(context).size.width,
                     child: ClipRRect(
                       borderRadius: BorderRadius.only(
@@ -48,10 +50,15 @@ class _SlideItemState extends State<SlideItem> {
                         bottomLeft: Radius.circular(50),
                         bottomRight: Radius.circular(50),
                       ),
-                      child: FadeInImage(
-                        fit: BoxFit.cover,
-                        image: CachedNetworkImageProvider("${widget.img}"),
-                        placeholder: AssetImage('images/ic_blank_image.png'),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        child: CircleAvatar(
+                          backgroundImage: widget.img == null
+                              ? AssetImage('images/ic_blank_image.png')
+                              : CachedNetworkImageProvider("${widget.img}"),
+                          radius: 20.0,
+                        ),
                       ),
 
                     /*  CachedNetworkImageProvider(
@@ -63,81 +70,65 @@ class _SlideItemState extends State<SlideItem> {
 
                   Positioned(
                     top: 6.0,
-                    right: 6.0,
-                    child: Card(
-                      shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(4.0)),
-                      child: Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow[600],
-                              size: 10,
-                            ),
+                    left: 6.0,
+                    child:GestureDetector(
+                      child:  Image.asset("images/icons/ic_menu_tres_pontos.png",
+                          height: 48,
+                          width: 48),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                LocalizacaoScreen(),
+                          ),
+                        );
+                      },
 
-                            Text(
-                              " ${widget.rating} ",
-                              style: TextStyle(
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    ),
+                    ),
+
+                  Positioned(
+                    top: 7.0,
+                    right: 6.0,
+                    child: Icon(
+                      Icons.star,
+                      color: Colors.yellow[600],
+                      size: 25,
                     ),
                   ),
 
-             /*    Positioned(
-                    top: 6.0,
-                    left: 6.0,
-                    child: Card(
-                      shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(3.0)),
-                      child: Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child:Text(
-                          " ABRIR ",
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),*/
                 ],
               ),
 
               SizedBox(height: 7.0),
 
               ResponsivePadding(
-                padding: EdgeInsets.only(left: 130.0),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   child: Text(
                     "${widget.nome}",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
                     ),
-                    textAlign: TextAlign.left,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
 
               ResponsivePadding(
-                padding: EdgeInsets.only(left: 125.0),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   child: Text(
                     "${widget.tipoPet}",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 12,
                       fontWeight: FontWeight.w300,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

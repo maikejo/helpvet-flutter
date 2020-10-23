@@ -62,7 +62,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
   final db = Firestore.instance;
   final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  Uint8List byteDataImage;
+  ByteData byteDataImage;
   UserProvider userProvider;
 
   @override
@@ -81,17 +81,17 @@ class _HomePetScreenState extends State<HomePetScreen> {
   }
 
   Future<Uint8List> _networkImageToByte() async {
-    Uint8List byteImage = await networkImageToByte('https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Favatar_pet%2Favatar_pet?alt=media&token=8932220f-3d61-4a63-84ea-521822f46861');
-
+    Uint8List byteImage = await networkImageToByte('https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Favatar%2Favatar?alt=media&token=20211314-7b4b-4c44-9c33-d5c3333548cc');
+    ByteData byteData = byteImage.buffer.asByteData();
     setState(() {
-      byteDataImage = byteImage;
+      byteDataImage = byteData;
     });
 
     return byteImage;
   }
 
   void _compartilharFoto() async{
-    await Share.file('Meu pet usa - HelpVet App', 'pet.png', byteDataImage, 'image/png', text: 'Meu pet usa - HelpVet App');
+    await Share.file('Meu pet usa - HelpVet App', 'pet.png', byteDataImage.buffer.asInt8List(), 'image/png', text: 'Meu pet usa o aplicativo - HelpVet App');
   }
 
   void registerNotification() {
@@ -758,8 +758,8 @@ class _HomePetScreenState extends State<HomePetScreen> {
                         FutureBuilder(
                             future: CadastroPetService.getCadastroPet(Auth.user.email,widget.idPet),
                             builder: (BuildContext context, AsyncSnapshot<CadastroPet> snapshot) {
-                              if (snapshot.data != null) {
 
+                              if (snapshot.data != null) {
                                 int idade = calcularIdade(snapshot.data.dataNascimento.toDate());
 
                                 return Center(

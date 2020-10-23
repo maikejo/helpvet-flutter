@@ -11,7 +11,8 @@ class LinkButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: this.onTap,
-        child: new Text(text,
-            style: CommonStyles(context: context).getLinkText()));
+        child: new Text(text, style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue,fontSize: 20.0)
+        )
+    );
   }
 }

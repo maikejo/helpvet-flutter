@@ -21,6 +21,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'call_screens/pickup/pickup_layout.dart';
 import 'full_screen_image.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChatScreen extends StatefulWidget {
   String name;
@@ -64,6 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    initPlatformState();
     //readLocal();
 
     Auth.getCurrentFirebaseUser().then((user) {
@@ -77,7 +79,7 @@ class _ChatScreenState extends State<ChatScreen> {
         );
 
         receiver = User(
-            email: 'teste@teste.com',
+            email: 'maikejo@gmail.com',
             nome: 'Teste',
             imagemUrl: 'https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/administrador%40adm.com%2Favatar%2Favatar?alt=media&token=b459a478-bb2c-4e18-9a5d-5938054fac46'
         );
@@ -110,6 +112,11 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     super.dispose();
     subscription?.cancel();
+  }
+
+  Future<void> initPlatformState() async {
+    await [Permission.camera, Permission.microphone, Permission.storage]
+        .request();
   }
 
   readLocal() async {

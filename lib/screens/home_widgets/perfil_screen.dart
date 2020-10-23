@@ -148,7 +148,9 @@ class _PerfilScreenState extends State<PerfilScreen> with SingleTickerProviderSt
                                     ResponsivePadding(
                                       padding: const EdgeInsets.only(top: 30.0),
                                       child: GestureDetector(
-                                        onTap: () => null,
+                                        onTap: () {
+                                          getImageFromGallery();
+                                        },
                                         child: new Center(
                                           child: _urlAvatarController == null
                                               ? new Stack(

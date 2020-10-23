@@ -35,6 +35,7 @@ class TitleWidget extends StatelessWidget {
                 fontSize: CommonVariables(context: context).getLargeFontSize(),
                 color: CommonColors.white,
                 fontFamily: 'SanFransisco'),
+            textAlign: TextAlign.center,
           ),
         ),
       ],

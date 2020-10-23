@@ -45,7 +45,7 @@ class _EscolherSignupScreenState extends State<EscolherSignupScreen> with Single
 
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: sizeConfig.dynamicScaleSize(size: 1000),
+      height: sizeConfig.dynamicScaleSize(size: 350),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -169,7 +169,7 @@ class _EscolherSignupScreenState extends State<EscolherSignupScreen> with Single
                 child: Text('Selecione o tipo de conta de acordo com seu perfil.' ,
                     style: TextStyle(fontWeight: FontWeight.bold,
                         color: Colors.blueGrey,
-                        fontSize: 18
+                        fontSize: 15
                     )),
               ),
           ),
