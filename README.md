@@ -2,7 +2,7 @@
 
 Novo projeto em flutter
 
-## Iniciar Deploy
+## Iniciar
 
 - flutter build appbundle
 
