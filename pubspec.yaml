@@ -79,6 +79,8 @@ dependencies:
   fledge: ^0.1.3
   agora_rtc_engine: ^1.0.8
   permission_handler: ^5.0.1+1
+  arkit_plugin: ^0.6.0
+  arcore_flutter_plugin: ^0.0.5+1
 
 dev_dependencies:
   flutter_test:
@@ -471,6 +473,7 @@ flutter:
     - images/icons/ic_conta_clinica.png
     - images/icons/ic_menu_tres_pontos.png
     - images/icons/ic_track_pet.png
+    - images/icons/ic_3d.png
 
   fonts:
     - family: SanFransisco

@@ -36,6 +36,15 @@ android {
         }*/
     }
 
+    android {
+        // Sceneform libraries use language constructs from Java 8.
+        // Add these compile options if targeting minSdkVersion < 26.
+        compileOptions {
+            sourceCompatibility 1.8
+            targetCompatibility 1.8
+        }
+    }
+
     /*signingConfigs {
         release {
             if (System.getenv()["CI"]) { // Configuração para deploy no codemagic
@@ -60,7 +69,7 @@ android {
 
     defaultConfig {
         applicationId "br.com.pet.pethomecare"
-        minSdkVersion 16
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -106,6 +115,9 @@ dependencies {
     //api 'com.google.firebase:firebase-crashlytics:17.0.0-beta03'
     //api 'com.google.firebase:firebase-analytics'
     api 'com.google.firebase:firebase-perf:18.0.1'
+    implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.8.0'
+    implementation 'com.google.ar.sceneform:core:1.8.0'
+    implementation 'com.google.ar:core:1.8.0'
 }
 apply plugin: 'com.google.gms.google-services'
 //apply plugin: 'com.google.firebase.crashlytics'

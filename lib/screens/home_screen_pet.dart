@@ -42,6 +42,7 @@ import 'home_pet_widgets/home_vet_perfil.dart';
 import 'home_widgets/home_adm_bar.dart';
 import 'home_widgets/home_vet_bar.dart';
 import 'package:social_share_plugin/social_share_plugin.dart';
+import './3d_screen.dart';
 
 
 class HomePetScreen extends StatefulWidget {
@@ -905,6 +906,23 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                                                 onPressed: () {
                                                                   Navigator.push(context,
                                                                     MaterialPageRoute(builder: (context) => InstaHomeScreen(),
+                                                                    ),
+                                                                  );
+                                                                }
+                                                            ),
+                                                          ],
+                                                        ),
+
+                                                        Column(
+                                                          children: <Widget>[
+                                                            IconButton(
+                                                                icon: ResponsiveImage(
+                                                                    image: new ExactAssetImage("images/icons/ic_3d.png"),
+                                                                    width: 30.0,
+                                                                    height: 30.0),
+                                                                onPressed: () {
+                                                                  Navigator.push(context,
+                                                                    MaterialPageRoute(builder: (context) => TresdScreen(),
                                                                     ),
                                                                   );
                                                                 }
