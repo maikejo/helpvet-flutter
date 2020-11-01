@@ -922,7 +922,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                                                     height: 30.0),
                                                                 onPressed: () {
                                                                   Navigator.push(context,
-                                                                    MaterialPageRoute(builder: (context) => TresdScreen(),
+                                                                    MaterialPageRoute(builder: (context) => AssetsObject(),
                                                                     ),
                                                                   );
                                                                 }

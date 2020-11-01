@@ -30,7 +30,6 @@ import 'dart:ui';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class LocalizacaoScreen extends StatefulWidget {
-  LocalizacaoScreen();
 
   @override
   _LocalizacaoScreenState createState() => new _LocalizacaoScreenState();
@@ -67,13 +66,10 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   GoogleMapController mapController;
   LatLng centerPosition;
   Stream<List<DocumentSnapshot>> stream;
-
-  Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   int _markerIdCounter = 0;
 
   CameraPosition cameraPosition;
-  Map<String, double> _currentLocation;
   GoogleMapsServices _googleMapsServices = GoogleMapsServices();
   GoogleMapsServices get googleMapsServices => _googleMapsServices;
   final Set<Polyline> _polyLines = {};
@@ -85,7 +81,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   Geoflutterfire geo;
   var radius = BehaviorSubject<double>.seeded(1.0);
   Firestore _firestore = Firestore.instance;
-
+  StreamSubscription _locationSubscription;
   TextEditingController destinationController = TextEditingController();
 
   bool _permission = false;
@@ -94,7 +90,6 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
 
     geo = Geoflutterfire();
     GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
@@ -107,69 +102,23 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     getCurrentLocation();
   }
 
-  List<Marker> getMarker() {
-    List<Marker> markers = <Marker>[
-      new Marker(markerId: null),
-      new Marker(markerId: null),
-    ];
-
-    return markers;
-  }
-
   void _redirectLocalizacaoPetScreen() {
     Application.router.navigateTo(context, RouteConstants.ROUTE_LOCALIZACAO_PET, transition: TransitionType.inFromBottom);
   }
 
   void _onMapCreated(GoogleMapController controller) {
-
     setState(() {
-    _updateMarkers();
+      _clinicasMarkers();
       _controller.complete(controller);
+      mapController = controller;
     });
-
-
-   /* if (locationData != null) {
-      MarkerId markerId = MarkerId(_markerIdVal());
-      LatLng position = LatLng(locationData.latitude, locationData.longitude);
-      Marker marker = Marker(
-        markerId: markerId,
-        position: position,
-        draggable: false,
-        icon: BitmapDescriptor.defaultMarker
-      );
-      setState(() {
-        _markers[markerId] = marker;
-
-        stream.listen((List<DocumentSnapshot> documentList) {
-          _updateMarkers(documentList);
-        });
-      });
-
-      Future.delayed(Duration(seconds: 1), () async {
-        GoogleMapController controller = await _controller.future;
-        controller.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: position,
-              zoom: 17.0,
-            ),
-          ),
-        );
-      });
-    }*/
-  }
-
-  String _markerIdVal({bool increment = false}) {
-    String val = 'marker_id_$_markerIdCounter';
-    if (increment) _markerIdCounter++;
-    return val;
   }
 
   void _addMarker(double lat, double lng,String nomeClinica,String endereco,String imagem) async {
     BitmapDescriptor markerImage = await MapHelper.getMarkerImageFromUrl(imagem,targetWidth: 150,targetHeight: 150);
 
     MarkerId id = MarkerId(lat.toString() + lng.toString());
-    Marker _marker = Marker(
+    marker = Marker(
       markerId: id,
       position: LatLng(lat, lng),
       icon: markerImage,
@@ -177,11 +126,26 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
       infoWindow: InfoWindow(title: nomeClinica, snippet: endereco),
     );
     setState(() {
-      markers[id] = _marker;
+      markers[id] = marker;
     });
   }
 
-  void _updateMarkers() {
+  void _addMarkerPet(double lat, double lng,String nomeClinica,String endereco) async {
+    Uint8List imageData = await getMarkerPet();
+
+    MarkerId id = MarkerId('pet');
+    marker = Marker(
+      markerId: id,
+      position: LatLng(lat, lng),
+      icon: BitmapDescriptor.fromBytes(imageData),
+      infoWindow: InfoWindow(title: nomeClinica, snippet: endereco),
+    );
+    setState(() {
+      markers[id] = marker;
+    });
+  }
+
+  void _clinicasMarkers() {
       Firestore.instance.collection('clinicas').getDocuments().then((docs) {
         if (docs.documents.isNotEmpty) {
           setState(() {
@@ -189,56 +153,47 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               GeoPoint point = docs.documents[i].data['position']['geopoint'];
               _addMarker(point.latitude, point.longitude,docs.documents[i].data['nome'],docs.documents[i].data['endereco'],docs.documents[i].data['imagemUrl']);
             }
-
           });
         }
       });
   }
 
-  Future<LocationData> getCurrentLocation() async{
-
-      try {
-         locationData = await location.getLocation();
-
-         location.onLocationChanged().listen((LocationData _currentLocation) {
-           print(_currentLocation.latitude);
-           print(_currentLocation.longitude);
-
-           if(_markers.length > 0) {
-             MarkerId markerId = MarkerId(_markerIdVal());
-             marker = _markers[markerId];
-             Marker updatedMarker = marker.copyWith(
-                 positionParam: LatLng(_currentLocation.latitude, _currentLocation.longitude),
-                 iconParam: BitmapDescriptor.defaultMarker,
-                 infoWindowParam: InfoWindow(title: "Meu Pet",)
-             );
-
-             setState(() {
-               _markers[markerId] = updatedMarker;
-             });
-           }
-
-         });
-
-      } on PlatformException catch (e) {
-        if (e.code == 'PERMISSION_DENIED') {
-          error = 'Permission denied';
-        }
-        locationData = null;
-      }
-
-      setState(() {
-        mapToggle = true;
-        _permission = true;
-      });
-
-   return locationData;
+  Future<Uint8List> getMarkerPet() async {
+    ByteData byteData = await DefaultAssetBundle.of(context).load("images/icons/ic_track_pet.png");
+    return byteData.buffer.asUint8List();
   }
 
-  void _onCameraMove(CameraPosition position) {
+  Future<LocationData> getCurrentLocation() async{
+
+    try {
+       locationData = await location.getLocation();
+       _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
+       _locationSubscription = location.onLocationChanged().listen((locationData) {
+
+       if (mapController != null) {
+         mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+             bearing: 192.8334901395799,
+             target: LatLng(locationData.latitude, locationData.longitude),
+             tilt: 0,
+             zoom: 18.00)));
+
+         _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
+       }
+       });
+
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        error = 'Permission denied';
+      }
+      locationData = null;
+    }
+
     setState(() {
-      cameraPosition = position;
+      mapToggle = true;
+      _permission = true;
     });
+
+   return locationData;
   }
 
   /// explore drag callback
@@ -322,7 +277,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
                 width: double.infinity,
                 child: mapToggle ?
                 GoogleMap(
-                    myLocationEnabled: true,
+                    //myLocationEnabled: true,
                     markers: Set<Marker>.from(markers.values),
                     initialCameraPosition: CameraPosition(target: LatLng(locationData.latitude, locationData.longitude),zoom: 16.0),
                     onMapCreated: _onMapCreated,
@@ -402,16 +357,18 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
 
   @override
   void dispose() {
-    super.dispose();
+
+    if (_locationSubscription != null) {
+      _locationSubscription.cancel();
+    }
+
     animationControllerExplore?.dispose();
     animationControllerSearch?.dispose();
     animationControllerMenu?.dispose();
     radius.close();
+
+    super.dispose();
+
   }
-
-
-
-
-
 
 }

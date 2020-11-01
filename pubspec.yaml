@@ -95,6 +95,17 @@ flutter:
     - assets/rato.flr
     - assets/Teddy.flr
     - assets/Penguin.flr
+    - assets/earth_augmented_image.jpg
+    - assets/earth.jpg
+    - assets/AndroidRobot.gif
+    - assets/ArcticFox.gif
+    - assets/TocoToucan.gif
+    - assets/prova_texture.png
+    - assets/umano_digitale.png
+    - assets/dog.png
+    - assets/fox_face_mesh_texture.png
+    - assets/dog_mesh_texture.png
+    - assets/myimages.imgdb
     - images/flags/abkhazia.png
     - images/flags/afghanistan.png
     - images/flags/aland-islands.png

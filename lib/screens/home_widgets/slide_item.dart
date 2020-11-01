@@ -30,7 +30,7 @@ class _SlideItemState extends State<SlideItem> {
       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
         height: MediaQuery.of(context).size.height / 3.9,
-        width: MediaQuery.of(context).size.width / 1.5,
+        width: MediaQuery.of(context).size.width / 1.2,
         child: Card(
           color: Colors.white,
           shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(20.0)),
@@ -43,13 +43,7 @@ class _SlideItemState extends State<SlideItem> {
                     padding: const EdgeInsets.only(top: 40.0),
                     height: MediaQuery.of(context).size.height/5.9,
                     width: MediaQuery.of(context).size.width,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                        bottomLeft: Radius.circular(50),
-                        bottomRight: Radius.circular(50),
-                      ),
+
                       child: Container(
                         width: 50,
                         height: 50,
@@ -66,7 +60,7 @@ class _SlideItemState extends State<SlideItem> {
                         fit: BoxFit.cover,
                       ),*/
                     ),
-                  ),
+
 
                   Positioned(
                     top: 6.0,
