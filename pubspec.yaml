@@ -9,18 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
 
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.3
   rxdart: ^0.23.1
-  dson: ^0.15.1
-  scoped_model: ^0.3.0
+  dson: ^0.18.0
+  scoped_model: ^1.1.0
   image_picker: ^0.6.7+12
-  video_player: ^0.10.5
   dio: ^3.0.10
   intl: ^0.16.1
-  fluro: ^1.7.4
+  fluro: ^2.0.3
   charts_flutter: ^0.8.1
   cloud_firestore: ^0.13.0+1
   cloud_functions: ^0.4.1+1

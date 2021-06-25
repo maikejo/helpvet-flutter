@@ -189,22 +189,20 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                             ],
                           )
-                              : Container(
-                            height: 130.0,
-                            width: 130.0,
-                            decoration: new BoxDecoration(
-                              color: const Color(0xff7c94b6),
-                              image: new DecorationImage(
-                                image: new AssetImage(
-                                    _fileController.path),
-                                fit: BoxFit.cover,
-                              ),
-                              border: Border.all(
-                                  color: Colors.pinkAccent,
-                                  width: 5.0),
-                              borderRadius: new BorderRadius.all(
-                                  const Radius.circular(80.0)),
-                            ),
+                              : ClipOval(
+                            child: Container(
+                                height: 100,
+                                width: 100,
+                                child: _fileController == null
+                                    ? Icon(
+                                  Icons.camera,
+                                  color: Colors.white,
+                                  size: 50,
+                                )
+                                    : Image.file(
+                                  _fileController,
+                                  fit: BoxFit.fill,
+                                )),
                           ),
                         ),
                       ),

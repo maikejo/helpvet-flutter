@@ -156,7 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return PickupLayout(
       scaffold: Scaffold(
-          resizeToAvoidBottomPadding: true,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             backgroundColor: Colors.pinkAccent,
             title: Text(widget.name),

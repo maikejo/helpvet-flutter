@@ -753,7 +753,7 @@ class Slidable extends StatefulWidget {
 
   /// The state from the closest instance of this class that encloses the given context.
   static SlidableState of(BuildContext context) {
-    return context.ancestorStateOfType(const TypeMatcher<SlidableState>());
+    return context.findAncestorStateOfType();
   }
 
   @override
