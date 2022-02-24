@@ -115,10 +115,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    //implementation "com.google.firebase:firebase-iid:17.0.2"
   /*  api 'com.google.firebase:firebase-ml-vision-image-label-model:20.0.2'
     api 'com.google.firebase:firebase-ml-vision-face-model:20.0.2'*/
     //api 'com.google.firebase:firebase-analytics:17.3.0'
-    //implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    //implementation 'com.google.firebase:firebase-messaging:17.0.0'
 
     //api platform('com.google.firebase:firebase-bom:25.12.0')
     //api 'com.google.firebase:firebase-crashlytics:17.0.0-beta03'
@@ -131,3 +132,4 @@ dependencies {
 apply plugin: 'com.google.gms.google-services'
 //apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
+
