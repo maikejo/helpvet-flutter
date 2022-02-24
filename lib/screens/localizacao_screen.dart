@@ -15,7 +15,7 @@ import 'package:flutter_finey/helper/ui_helper.dart';
 import 'package:flutter_finey/service/google_maps_requests.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:location/location.dart';
+import 'package:location/location.dart';
 import 'localizacao_widgets/explore_content_widget.dart';
 import 'localizacao_widgets/explore_widget.dart';
 import 'localizacao_widgets/localizacao_state.dart';
@@ -28,7 +28,6 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-/*
 
 class LocalizacaoScreen extends StatefulWidget {
 
@@ -147,16 +146,16 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   }
 
   void _clinicasMarkers() {
-      Firestore.instance.collection('clinicas').getDocuments().then((docs) {
-        if (docs.documents.isNotEmpty) {
-          setState(() {
-            for (int i = 0; i < docs.documents.length; ++i) {
-              GeoPoint point = docs.documents[i].data['position']['geopoint'];
-              _addMarker(point.latitude, point.longitude,docs.documents[i].data['nome'],docs.documents[i].data['endereco'],docs.documents[i].data['imagemUrl']);
-            }
-          });
-        }
-      });
+    Firestore.instance.collection('clinicas').getDocuments().then((docs) {
+      if (docs.documents.isNotEmpty) {
+        setState(() {
+          for (int i = 0; i < docs.documents.length; ++i) {
+            GeoPoint point = docs.documents[i].data['position']['geopoint'];
+            _addMarker(point.latitude, point.longitude,docs.documents[i].data['nome'],docs.documents[i].data['endereco'],docs.documents[i].data['imagemUrl']);
+          }
+        });
+      }
+    });
   }
 
   Future<Uint8List> getMarkerPet() async {
@@ -167,20 +166,20 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   Future<LocationData> getCurrentLocation() async{
 
     try {
-       locationData = await location.getLocation();
-       _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
-       _locationSubscription = location.onLocationChanged().listen((locationData) {
+      locationData = await location.getLocation();
+      _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
+      _locationSubscription = location.onLocationChanged().listen((locationData) {
 
-       if (mapController != null) {
-         mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
-             bearing: 192.8334901395799,
-             target: LatLng(locationData.latitude, locationData.longitude),
-             tilt: 0,
-             zoom: 18.00)));
+        if (mapController != null) {
+          mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+              bearing: 192.8334901395799,
+              target: LatLng(locationData.latitude, locationData.longitude),
+              tilt: 0,
+              zoom: 18.00)));
 
-         _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
-       }
-       });
+          _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
+        }
+      });
 
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
@@ -194,7 +193,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
       _permission = true;
     });
 
-   return locationData;
+    return locationData;
   }
 
   /// explore drag callback
@@ -213,25 +212,25 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         duration: Duration(
             milliseconds: 1 +
                 (800 *
-                        (isExploreOpen
-                            ? currentExplorePercent
-                            : (1 - currentExplorePercent)))
+                    (isExploreOpen
+                        ? currentExplorePercent
+                        : (1 - currentExplorePercent)))
                     .toInt()),
         vsync: this);
     curve =
         CurvedAnimation(parent: animationControllerExplore, curve: Curves.ease);
     animation = Tween(begin: offsetExplore, end: open ? 760.0 - 122 : 0.0)
         .animate(curve)
-          ..addListener(() {
-            setState(() {
-              offsetExplore = animation.value;
-            });
-          })
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              isExploreOpen = open;
-            }
-          });
+      ..addListener(() {
+        setState(() {
+          offsetExplore = animation.value;
+        });
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          isExploreOpen = open;
+        }
+      });
     animationControllerExplore.forward();
   }
 
@@ -241,17 +240,17 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     curve =
         CurvedAnimation(parent: animationControllerMenu, curve: Curves.ease);
     animation =
-        Tween(begin: open ? 0.0 : 358.0, end: open ? 358.0 : 0.0).animate(curve)
-          ..addListener(() {
-            setState(() {
-              offsetMenu = animation.value;
-            });
-          })
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              isMenuOpen = open;
-            }
-          });
+    Tween(begin: open ? 0.0 : 358.0, end: open ? 358.0 : 0.0).animate(curve)
+      ..addListener(() {
+        setState(() {
+          offsetMenu = animation.value;
+        });
+      })
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          isMenuOpen = open;
+        }
+      });
     animationControllerMenu.forward();
   }
 
@@ -262,67 +261,64 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
-      return Scaffold(
-        appBar: AppBar(
-            title: Text("Localização"),
-            backgroundColor: Colors.pinkAccent
-        ),
+    return Scaffold(
+      appBar: AppBar(
+          title: Text("Localização"),
+          backgroundColor: Colors.pinkAccent
+      ),
 
-        body: SizedBox(
-          width: screenWidth,
-          height: screenHeight,
-          child: Stack(
-            children: <Widget>[
-             _permission == true ? Container(
-                height: MediaQuery.of(context).size.height,
-                width: double.infinity,
-                child: mapToggle ?
-                GoogleMap(
-                    //myLocationEnabled: true,
-                    markers: Set<Marker>.from(markers.values),
-                    initialCameraPosition: CameraPosition(target: LatLng(locationData.latitude, locationData.longitude),zoom: 16.0),
-                    onMapCreated: _onMapCreated,
-                    polylines: _localizacaoState.polyLines
-                ) :
-                Center(
-                  child: SizedBox(
-                      child: new CircularProgressIndicator(
-                          valueColor:
-                          new AlwaysStoppedAnimation(
-                              Colors.blue),
-                          strokeWidth: 5.0),
-                      height: 50.0,
-                      width: 50.0),
-                ),
-              ) : SizedBox(),
+      body: SizedBox(
+        width: screenWidth,
+        height: screenHeight,
+        child: Stack(
+          children: <Widget>[
+            _permission == true ? Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              child: mapToggle ?
+              GoogleMap(
+                //myLocationEnabled: true,
+                  markers: Set<Marker>.from(markers.values),
+                  initialCameraPosition: CameraPosition(target: LatLng(locationData.latitude, locationData.longitude),zoom: 16.0),
+                  onMapCreated: _onMapCreated,
+                  polylines: _localizacaoState.polyLines
+              ) :
+              Center(
+                child: SizedBox(
+                    child: new CircularProgressIndicator(
+                        valueColor:
+                        new AlwaysStoppedAnimation(
+                            Colors.blue),
+                        strokeWidth: 5.0),
+                    height: 50.0,
+                    width: 50.0),
+              ),
+            ) : SizedBox(),
 
-              */
-/*  TextField(
+            /*  TextField(
               cursorColor: Colors.black,
               controller: destinationController,
               textInputAction: TextInputAction.go,
               onSubmitted: (value) {
                 _localizacaoState.sendRequest(LatLng(_currentLocation["latitude"], _currentLocation["longitude"]),LatLng(-8.886844130523066, 13.205616626023385));
               },
-            ),*//*
+            ),*/
 
+            ExploreWidget(
+              currentExplorePercent: currentExplorePercent,
+              currentSearchPercent: currentSearchPercent,
+              animateExplore: animateExplore,
+              isExploreOpen: isExploreOpen,
+              onVerticalDragUpdate: onExploreVerticalUpdate,
+              onPanDown: () => animationControllerExplore?.stop(),
+            ),
 
-              ExploreWidget(
-                currentExplorePercent: currentExplorePercent,
-                currentSearchPercent: currentSearchPercent,
-                animateExplore: animateExplore,
-                isExploreOpen: isExploreOpen,
-                onVerticalDragUpdate: onExploreVerticalUpdate,
-                onPanDown: () => animationControllerExplore?.stop(),
-              ),
+            ExploreContentWidget(
+              currentExplorePercent: currentExplorePercent,
+            ),
 
-              ExploreContentWidget(
-                currentExplorePercent: currentExplorePercent,
-              ),
-
-              //directions button
-              */
-/* MapButton(
+            //directions button
+            /* MapButton(
               currentSearchPercent: currentSearchPercent,
               currentExplorePercent: currentExplorePercent,
               bottom: 243,
@@ -336,28 +332,27 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
                 Color(0xFF1270E3),
               ]),
               onPanDown: _redirectLocalizacaoPetScreen,
-            ),*//*
+            ),*/
 
 
-
-              MapButton(
-                currentSearchPercent: currentSearchPercent,
-                currentExplorePercent: currentExplorePercent,
-                bottom: 148,
-                offsetX: -68,
-                width: 68,
-                height: 71,
-                icon: Icons.my_location,
-                iconColor: Colors.pinkAccent,
-                onPanDown: _redirectLocalizacaoPetScreen,
-              ),
-              MenuWidget(
-                  currentMenuPercent: currentMenuPercent,
-                  animateMenu: animateMenu),
-            ],
-          ),
+            MapButton(
+              currentSearchPercent: currentSearchPercent,
+              currentExplorePercent: currentExplorePercent,
+              bottom: 148,
+              offsetX: -68,
+              width: 68,
+              height: 71,
+              icon: Icons.my_location,
+              iconColor: Colors.pinkAccent,
+              onPanDown: _redirectLocalizacaoPetScreen,
+            ),
+            MenuWidget(
+                currentMenuPercent: currentMenuPercent,
+                animateMenu: animateMenu),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   @override
@@ -376,5 +371,4 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
 
   }
 
-
-}*/
+}

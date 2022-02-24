@@ -31,7 +31,7 @@ android {
        /* release {
             keyAlias keystoreProperties['pethomecare']
             keyPassword keystoreProperties['pethomecare']
-            storeFile keystoreProperties['C:\\Projetos\\FLUTTER\\helpvet-flutter\\pethomecare_release.jks']
+            storeFile keystoreProperties['D:\\Projetos\\heplvet\\android\app\\pethomecare_release.jks']
             storePassword keystoreProperties['pethomecare']
         }*/
     }

@@ -73,8 +73,8 @@ class Routes {
         handler: cadastroPetHandler);
 
     //Localizacao
-  /*  router.define(RouteConstants.ROUTE_LOCALIZACAO_PET,
-        handler: localizacaoPetHandler);*/
+    router.define(RouteConstants.ROUTE_LOCALIZACAO_PET,
+        handler: localizacaoPetHandler);
 
     //Chat
     router.define(RouteConstants.ROUTE_CHAT_USERS,
