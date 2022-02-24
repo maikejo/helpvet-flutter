@@ -70,13 +70,13 @@ class _SlideItemState extends State<SlideItem> {
                           height: 48,
                           width: 48),
                       onTap: () {
-                        Navigator.push(
+                       /* Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
                                 LocalizacaoScreen(),
                           ),
-                        );
+                        );*/
                       },
 
                     ),

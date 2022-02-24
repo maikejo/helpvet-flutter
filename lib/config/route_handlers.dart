@@ -96,10 +96,10 @@ var cadastroPetHandler = new Handler(
   return new CadastroPetScreen();
 });
 
-var localizacaoPetHandler = new Handler(
+/*var localizacaoPetHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return new LocalizacaoScreen();
-});
+});*/
 
 var chatPetHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {

@@ -15,7 +15,7 @@ import 'package:flutter_finey/helper/ui_helper.dart';
 import 'package:flutter_finey/service/google_maps_requests.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 import 'localizacao_widgets/explore_content_widget.dart';
 import 'localizacao_widgets/explore_widget.dart';
 import 'localizacao_widgets/localizacao_state.dart';
@@ -28,6 +28,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+/*
 
 class LocalizacaoScreen extends StatefulWidget {
 
@@ -295,14 +296,16 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
                 ),
               ) : SizedBox(),
 
-              /*  TextField(
+              */
+/*  TextField(
               cursorColor: Colors.black,
               controller: destinationController,
               textInputAction: TextInputAction.go,
               onSubmitted: (value) {
                 _localizacaoState.sendRequest(LatLng(_currentLocation["latitude"], _currentLocation["longitude"]),LatLng(-8.886844130523066, 13.205616626023385));
               },
-            ),*/
+            ),*//*
+
 
               ExploreWidget(
                 currentExplorePercent: currentExplorePercent,
@@ -318,7 +321,8 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               ),
 
               //directions button
-              /* MapButton(
+              */
+/* MapButton(
               currentSearchPercent: currentSearchPercent,
               currentExplorePercent: currentExplorePercent,
               bottom: 243,
@@ -332,7 +336,8 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
                 Color(0xFF1270E3),
               ]),
               onPanDown: _redirectLocalizacaoPetScreen,
-            ),*/
+            ),*//*
+
 
 
               MapButton(
@@ -371,4 +376,5 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
 
   }
 
-}
+
+}*/

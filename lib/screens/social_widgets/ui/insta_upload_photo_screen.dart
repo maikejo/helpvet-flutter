@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_finey/screens/social_widgets/resources/repository.dart';
 import 'package:flutter_finey/screens/social_widgets/ui/insta_home_screen.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:location/location.dart';
+//import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as Im;
 import 'package:path_provider/path_provider.dart';
@@ -146,7 +146,7 @@ class _InstaUploadPhotoScreenState extends State<InstaUploadPhotoScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 12.0,top: 10.0),
             child: FutureBuilder(
-                future: locateUser(),
+                //future: locateUser(),
                 builder: ((context, AsyncSnapshot<List<Address>> snapshot) {
                   //  if (snapshot.hasData) {
                   if (snapshot.hasData) {
@@ -219,7 +219,7 @@ class _InstaUploadPhotoScreenState extends State<InstaUploadPhotoScreen> {
     print('done');
   }
 
-  Future<List<Address>> locateUser() async {
+ /* Future<List<Address>> locateUser() async {
     LocationData currentLocation;
     Future<List<Address>> addresses;
 
@@ -245,5 +245,5 @@ class _InstaUploadPhotoScreenState extends State<InstaUploadPhotoScreen> {
       currentLocation = null;
     }
     return addresses;
-  }
+  }*/
 }
