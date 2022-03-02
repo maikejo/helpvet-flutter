@@ -14,6 +14,7 @@ import 'package:flutter_finey/helper/map_helper.dart';
 import 'package:flutter_finey/helper/ui_helper.dart';
 import 'package:flutter_finey/service/google_maps_requests.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 //import 'package:location/location.dart';
 import 'localizacao_widgets/explore_content_widget.dart';
@@ -60,8 +61,8 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   Completer<GoogleMapController> _controller = Completer();
   Map<String, double> userLocation;
   bool mapToggle = false;
-  //Location location = Location();
-  //LocationData locationData;
+  Position location = Position();
+  Position _currentPosition;
   Marker marker;
   GoogleMapController mapController;
   LatLng centerPosition;
@@ -99,7 +100,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
           center: center, radius: rad, field: 'position', strictMode: true);
     });
 
-    //getCurrentLocation();
+    getCurrentLocation();
   }
 
   void _redirectLocalizacaoPetScreen() {
@@ -163,38 +164,50 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     return byteData.buffer.asUint8List();
   }
 
- /* Future<LocationData> getCurrentLocation() async{
+  Future<Position> getCurrentLocation() async{
 
-    try {
-      locationData = await location.getLocation();
-      _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
-      _locationSubscription = location.onLocationChanged().listen((locationData) {
+    Geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
 
-        if (mapController != null) {
-          mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
-              bearing: 192.8334901395799,
-              target: LatLng(locationData.latitude, locationData.longitude),
-              tilt: 0,
-              zoom: 18.00)));
+        try {
 
-          _addMarkerPet(locationData.latitude, locationData.longitude,'Meu Pet','Localização coleira gps');
-        }
-      });
+          if(_currentPosition != null){
+            _addMarkerPet(_currentPosition.latitude, _currentPosition.longitude,'Meu Pet','Localização coleira gps');
 
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        error = 'Permission denied';
+            if (mapController != null) {
+              mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+                  bearing: 192.8334901395799,
+                  target: LatLng(_currentPosition.latitude, _currentPosition.longitude),
+                  tilt: 0,
+                  zoom: 18.00)));
+
+              _addMarkerPet(_currentPosition.latitude, _currentPosition.longitude,'Meu Pet','Localização coleira gps');
+            }
       }
-      locationData = null;
-    }
+        } on PlatformException catch (e) {
+          if (e.code == 'PERMISSION_DENIED') {
+            error = 'Permission denied';
+          }
+          _currentPosition = null;
+        }
+
+      });
+    }).catchError((e) {
+      print(e);
+    });
+
+
 
     setState(() {
       mapToggle = true;
       _permission = true;
     });
 
-    return locationData;
-  }*/
+    return _currentPosition;
+  }
 
   /// explore drag callback
   void onExploreVerticalUpdate(details) {
@@ -279,7 +292,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               GoogleMap(
                 //myLocationEnabled: true,
                   markers: Set<Marker>.from(markers.values),
-                  initialCameraPosition: CameraPosition(target: LatLng(null, null),zoom: 16.0),
+                  initialCameraPosition: CameraPosition(target: LatLng(_currentPosition.latitude, _currentPosition.longitude),zoom: 16.0),
                   onMapCreated: _onMapCreated,
                   polylines: _localizacaoState.polyLines
               ) :

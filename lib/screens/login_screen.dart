@@ -5,6 +5,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finey/animation/fade_in_animation.dart';
+import 'package:flutter_finey/blockchain/blockchain.dart';
 import 'package:flutter_finey/helper/size_config.dart';
 import 'package:flutter_finey/model/user.dart';
 import 'package:flutter_finey/screens/faq_screen.dart';

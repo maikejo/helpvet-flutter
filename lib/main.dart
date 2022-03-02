@@ -1,6 +1,6 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_finey/screens/chat_widgets/call_screens/provider/user_provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +25,8 @@ class MainAppState extends State<MainApp> {
     Application.router = router;
   }
 
-  final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  //final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+  //final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -61,4 +61,8 @@ class MainAppState extends State<MainApp> {
   }
 }
 
-void main() => runApp(new MainApp());
+
+Future main() async {
+  await dotenv.load(fileName: ".env");
+  runApp(MainApp());
+}

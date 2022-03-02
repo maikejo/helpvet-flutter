@@ -53,7 +53,6 @@ dependencies:
   curved_navigation_bar: ^0.3.1
   rflutter_alert: ^1.0.3
   simple_animations: ^1.3.4
-  firebase_messaging: ^6.0.2
   auto_size_text: ^2.1.0
   flare_flutter: ^1.8.0
   countdown: ^0.1.0
@@ -76,7 +75,9 @@ dependencies:
   permission_handler: ^5.0.1+1
   arkit_plugin: ^0.6.0
   arcore_flutter_plugin: ^0.0.5+1
-
+  web3dart: ^1.2.3
+  web_socket_channel: ^1.2.0
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/abi/abi_token.json
+    - .env
     - assets/credentials.json
     - assets/ic_logo_animation.flr
     - assets/rato.flr

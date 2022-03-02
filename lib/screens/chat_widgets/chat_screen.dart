@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/scheduler.dart';
@@ -55,7 +55,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   final String serverToken = 'AAAA_Z6kcx0:APA91bFBB7obavZseCgN3jRuhM0EnCWh4MyLYjyhNbs22HGlUncXZu3a_C-3xgVPTloJ8u9tSbp3hnWYwsZfURJoKshBGMHRwnbqa8MRQPilsj3z1UbA6Vc0LtJ5pi3XZzggcc-Yr9R7';
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  //final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   UserProvider userProvider;
 
   User sender;

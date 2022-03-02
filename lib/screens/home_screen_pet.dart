@@ -6,12 +6,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_finey/animation/fade_animation.dart';
 import 'package:flutter_finey/animation/fade_in_animation.dart';
+import 'package:flutter_finey/blockchain/blockchain.dart';
 import 'package:flutter_finey/helper/size_config.dart';
 import 'package:flutter_finey/model/cadastro_pet.dart';
 import 'package:flutter_finey/model/user.dart';
@@ -61,21 +62,51 @@ class _HomePetScreenState extends State<HomePetScreen> {
   CadastroPet dadosCadastroPet;
   final Color green = Color(0xFF1E8161);
   final db = Firestore.instance;
-  final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+  //final FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   ByteData byteDataImage;
   UserProvider userProvider;
 
+
+  BlockchainUtils blockchainUtils = BlockchainUtils();
+  var _myData;
+
   @override
   void initState() {
     super.initState();
+
+  /*  blockchainUtils.initialSetup();
+    blockchainUtils.loginAccount("maikejo@gmail.com", "Alucard3").then((data) {
+      _myData = data;
+      setState(() {});
+    });*/
+
+   /* blockchainUtils.initialSetup();
+    blockchainUtils.createAccount("Maike", "Alucard3", "maikejo@gmail.com").then((data) {
+      _myData = data;
+      setState(() {});
+    });*/
+
+   /* blockchainUtils.initialSetup();
+    blockchainUtils.transfer(null, 1.1).then((data) {
+      _myData = data;
+      setState(() {});
+    });
+
+    blockchainUtils.getBalance().then((data) {
+      _myData = data;
+      setState(() {});
+    });*/
+
+
+
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       userProvider = Provider.of<UserProvider>(context, listen: false);
       userProvider.refreshUser();
     });
 
-    registerNotification();
+    //registerNotification();
     configLocalNotification();
     _recuperaUser();
     _networkImageToByte();
@@ -95,7 +126,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
     await Share.file('Meu pet usa - HelpVet App', 'pet.png', byteDataImage.buffer.asInt8List(), 'image/png', text: 'Meu pet usa o aplicativo - HelpVet App');
   }
 
-  void registerNotification() {
+  /*void registerNotification() {
     firebaseMessaging.requestNotificationPermissions();
 
     firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
@@ -119,7 +150,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
     }).catchError((err) {
       Fluttertoast.showToast(msg: err.message.toString());
     });
-  }
+  }*/
 
   void configLocalNotification() {
     var initializationSettingsAndroid =
