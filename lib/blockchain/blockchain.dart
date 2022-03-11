@@ -32,8 +32,14 @@ class BlockchainUtils {
     return myData;
   }
 
-  Future getName() async {
+  Future<String> getName() async {
     List<dynamic> result = await query("name", []);
+    var myData = result[0];
+    return myData;
+  }
+
+  Future<String> getSymbol() async {
+    List<dynamic> result = await query("symbol", []);
     var myData = result[0];
     return myData;
   }

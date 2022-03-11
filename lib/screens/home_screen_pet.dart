@@ -68,56 +68,9 @@ class _HomePetScreenState extends State<HomePetScreen> {
   ByteData byteDataImage;
   UserProvider userProvider;
 
-  //BlockchainUtils blockchainUtils = BlockchainUtils();
-  //var _myData;
-
   @override
   Future<void> initState()  {
     super.initState();
-
-
-    BlockchainUtils blockchainUtils = BlockchainUtils();
-    blockchainUtils.initialSetup();
-    blockchainUtils.getName();
-
-
-
-
-
-
-
-    //blockchainUtils.initialSetup();
-
-    //WalletAddress walletAddressService = WalletAddress();
-    //final mnemonic = walletAddressService.generateMnemonic();
-    //final privateKey = await walletAddressService.getPrivateKey(mnemonic);
-    //final publicKey = await walletAddressService.getPublicKey(privateKey);
-    //print(privateKey);
-    //print(publicKey);
-    //blockchainUtils.createWallet();
-
-    /*  blockchainUtils.initialSetup();
-    blockchainUtils.loginAccount("maikejo@gmail.com", "Alucard3").then((data) {
-      _myData = data;
-      setState(() {});
-    });*/
-
-    /* blockchainUtils.initialSetup();
-    blockchainUtils.createAccount("Maike", "Alucard3", "maikejo@gmail.com").then((data) {
-      _myData = data;
-      setState(() {});
-    });*/
-
-    /* blockchainUtils.initialSetup();
-    blockchainUtils.transfer(null, 1.1).then((data) {
-      _myData = data;
-      setState(() {});
-    });
-
-    blockchainUtils.getBalance().then((data) {
-      _myData = data;
-      setState(() {});
-    });*/
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       userProvider = Provider.of<UserProvider>(context, listen: false);

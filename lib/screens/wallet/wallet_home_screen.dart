@@ -15,14 +15,23 @@ class WalletHomeScreen extends StatefulWidget {
 
 class _WalletHomeScreenState extends State<WalletHomeScreen> {
 
+  var simbolo = null;
+  final bool _running = true;
+
+  Stream<String> _clock() async* {
+    while (_running) {
+      await Future<void>.delayed(const Duration(seconds: 1));
+
+      BlockchainUtils blockchainUtils = BlockchainUtils();
+      blockchainUtils.initialSetup();
+      simbolo = await blockchainUtils.getSymbol();
+      yield "${simbolo}";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var layoutBuilder = LayoutBuilder(builder: _buildWithConstraints);
-
-    BlockchainUtils blockchainUtils = BlockchainUtils();
-    blockchainUtils.initialSetup();
-    blockchainUtils.loginAccount("email", "password");
-
 
     return Scaffold(
       appBar: new AppBar(
@@ -88,9 +97,20 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
                   children: <Widget>[
 
                     //Icon(Icons.backspace_rounded, color: Colors.lightBlue[100],),
-                    Text("\$1000.00", style: TextStyle(color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700),),
+                    StreamBuilder(
+                      stream: _clock(),
+                      builder: (context, AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+                        return Text(
+                          snapshot.data + " - \$1000.00", style: TextStyle(color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.w700)
+                        );
+
+                      },
+                    ),
 
                     Container(
                       child: Row(
@@ -114,7 +134,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
                 ),
 
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 47),
+                  margin: EdgeInsets.symmetric(horizontal: 20),
                   child: Text("Valor total", style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
