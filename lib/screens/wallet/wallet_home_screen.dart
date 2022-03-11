@@ -87,6 +87,27 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
       child: Stack(
         children: <Widget>[
           //Container for top data
+
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            child: Row(
+              children: <Widget>[
+           /*     Icon(
+                  Icons.notifications, color: Colors.lightBlue[100],),*/
+                SizedBox(width: 16,),
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.white,
+                  child: ClipOval(
+                    child: Image.asset(
+                        "images/ic_pet.png", fit: BoxFit.contain,
+                        width: 40),
+                  ),
+                )
+              ],
+            ),
+          ),
+
           Container(
             margin: EdgeInsets.symmetric(horizontal: 32, vertical: 30),
             child: Column(
@@ -111,30 +132,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
 
                       },
                     ),
-
-                    Container(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.notifications, color: Colors.lightBlue[100],),
-                          SizedBox(width: 16,),
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.white,
-                            child: ClipOval(
-                              child: Image.asset(
-                                  "images/ic_pet.png", fit: BoxFit.contain,
-                                  width: 40),
-                            ),
-                          )
-                        ],
-                      ),
-                    )
                   ],
                 ),
 
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  margin: EdgeInsets.symmetric(horizontal: 72),
                   child: Text("Valor total", style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
