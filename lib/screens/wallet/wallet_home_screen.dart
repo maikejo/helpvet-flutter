@@ -1,5 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finey/blockchain/blockchain.dart';
 import 'package:flutter_finey/config/application.dart';
 import 'package:flutter_finey/config/routes.dart';
 import 'package:flutter_finey/screens/common_widgets/finey_drawer.dart';
@@ -17,6 +18,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
   @override
   Widget build(BuildContext context) {
     var layoutBuilder = LayoutBuilder(builder: _buildWithConstraints);
+
+    BlockchainUtils blockchainUtils = BlockchainUtils();
+    blockchainUtils.initialSetup();
+    blockchainUtils.loginAccount("email", "password");
+
 
     return Scaffold(
       appBar: new AppBar(

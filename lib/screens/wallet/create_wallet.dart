@@ -39,7 +39,6 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
     Wallet wallet = new Wallet(nome: 'Minha Carteira', privateKey: privateKey.toString(), address: publicKey.toString());
     Firestore.instance.document("wallet/${Auth.user.email}").setData(wallet.toJson());
     Firestore.instance.collection('usuarios').document(Auth.user.email).updateData({'isWallet': true});
-
   }
 
   @override

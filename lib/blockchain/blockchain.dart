@@ -7,7 +7,7 @@ class BlockchainUtils {
   http.Client httpClient;
   Web3Client ethClient;
   final contractAddress = dotenv.env["FIRST_COIN_CONTRACT_ADDRESS"];
-  EthereumAddress wallet_address = EthereumAddress.fromHex(dotenv.env["FIRST_COIN_CONTRACT_ADDRESS"]);
+  EthereumAddress wallet_address = EthereumAddress.fromHex(dotenv.env["METAMASK_RINKEBY_WALLET_ADDRESS"]);
 
   void initialSetup() {
     httpClient = http.Client();
@@ -17,43 +17,49 @@ class BlockchainUtils {
 
   Future<DeployedContract> getDeployedContract() async {
     String abi = await rootBundle.loadString("assets/abi/abi_token.json");
-    final contract = DeployedContract(ContractAbi.fromJson(abi, "HelpVetToken"), EthereumAddress.fromHex(contractAddress));
+    final contract = DeployedContract(ContractAbi.fromJson(abi, "HelpVetTokenUpgradeableV3"), EthereumAddress.fromHex(contractAddress));
     return contract;
   }
 
-  Future<String> createAccount(String nameAccount, String password, String email) async {
-    var response = await submit("createAccount", [nameAccount, password, email]);
+  Future<String> createAccount(String nameAccount, String password, String email, String privateKey) async {
+    var response = await submit("createAccount", [nameAccount, password, email], privateKey);
     return response;
   }
 
   Future<String> loginAccount(String email, String password) async {
-    List<dynamic> dataLogin = await query("loginAccount", [email, password]);
+    List<dynamic> dataLogin = await query("loginAccount3", [email, password]);
     var myData = dataLogin[0];
     return myData;
   }
 
-  Future getBalance() async {
-    List<dynamic> result = await query("balances", [wallet_address]);
+  Future getName() async {
+    List<dynamic> result = await query("name", []);
     var myData = result[0];
     return myData;
   }
 
-  Future<String> transfer(EthereumAddress address, double amount) async {
+  Future getBalance() async {
+    List<dynamic> result = await query("balance", [wallet_address]);
+    var myData = result[0];
+    return myData;
+  }
+
+  Future<String> transfer(EthereumAddress address, double amount, String privateKey) async {
     address = wallet_address;
     var bigAmount = BigInt.from(amount);
-    var response = await submit("transfer", [address, bigAmount]);
+    var response = await submit("transfer", [address, bigAmount], privateKey);
     return response;
   }
 
-  Future<String> withdrawCoin(double amount) async {
+  Future<String> withdrawCoin(double amount, String privateKey) async {
     var bigAmount = BigInt.from(amount);
-    var response = await submit("withdrawBalance", [bigAmount]);
+    var response = await submit("withdrawBalance", [bigAmount], privateKey);
     return response;
   }
 
-  Future<String> depositCoin(double amount) async {
+  Future<String> depositCoin(double amount, String privateKey) async {
     var bigAmount = BigInt.from(amount);
-    var response = await submit("depositBalance", [bigAmount]);
+    var response = await submit("depositBalance", [bigAmount], privateKey);
     return response;
   }
 
@@ -65,9 +71,9 @@ class BlockchainUtils {
     return result;
   }
 
-  Future<String> submit(String functionName, List<dynamic> args) async {
+  Future<String> submit(String functionName, List<dynamic> args, String privateKey) async {
     try {
-      EthPrivateKey credential = EthPrivateKey.fromHex(dotenv.env['METAMASK_PRIVATE_KEY']);
+      EthPrivateKey credential = EthPrivateKey.fromHex(privateKey);
       DeployedContract contract = await getDeployedContract();
       final ethFunction = contract.function(functionName);
       final result = await ethClient.sendTransaction(

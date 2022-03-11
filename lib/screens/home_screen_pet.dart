@@ -75,6 +75,17 @@ class _HomePetScreenState extends State<HomePetScreen> {
   Future<void> initState()  {
     super.initState();
 
+
+    BlockchainUtils blockchainUtils = BlockchainUtils();
+    blockchainUtils.initialSetup();
+    blockchainUtils.getName();
+
+
+
+
+
+
+
     //blockchainUtils.initialSetup();
 
     //WalletAddress walletAddressService = WalletAddress();
