@@ -4,7 +4,15 @@ import 'package:flutter_finey/config/application.dart';
 import 'package:flutter_finey/config/routes.dart';
 import 'package:flutter_finey/screens/common_widgets/finey_drawer.dart';
 
-class WalletHomeScreen extends StatelessWidget {
+class WalletHomeScreen extends StatefulWidget {
+  WalletHomeScreen({@required this.privateKey});
+  final Future<String> privateKey;
+
+  @override
+  _WalletHomeScreenState createState() => _WalletHomeScreenState();
+}
+
+class _WalletHomeScreenState extends State<WalletHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +20,11 @@ class WalletHomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: new AppBar(
-        leading: IconButton(icon:Icon(Icons.arrow_back),
-          onPressed:() => Application.router.navigateTo(
-              context, RouteConstants.ROUTE_HOME,
-              transition: TransitionType.fadeIn),
+        leading: IconButton(icon: Icon(Icons.arrow_back),
+          onPressed: () =>
+              Application.router.navigateTo(
+                  context, RouteConstants.ROUTE_HOME,
+                  transition: TransitionType.fadeIn),
         ),
         backgroundColor: Color.fromRGBO(38, 81, 158, 1),
         title: Text('Minha Carteira'),
@@ -34,7 +43,7 @@ class WalletHomeScreen extends StatelessWidget {
               title: Text("Card")
           ),
         ],
-       /* onTap: (index){
+        /* onTap: (index){
           setState(() {
             selectedTab = index;
           });
@@ -43,7 +52,7 @@ class WalletHomeScreen extends StatelessWidget {
         iconSize: 30,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: () {},
         elevation: 0,
         child: Icon(Icons.add),
       ),
@@ -55,7 +64,10 @@ class WalletHomeScreen extends StatelessWidget {
 
   Widget _buildWithConstraints(BuildContext context, BoxConstraints constraints) {
     return Container(
-      height: MediaQuery.of(context).size.height,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height,
       width: double.infinity,
       child: Stack(
         children: <Widget>[
@@ -70,18 +82,23 @@ class WalletHomeScreen extends StatelessWidget {
                   children: <Widget>[
 
                     //Icon(Icons.backspace_rounded, color: Colors.lightBlue[100],),
-                    Text("\$1000.00", style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w700),),
+                    Text("\$1000.00", style: TextStyle(color: Colors.white,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w700),),
 
                     Container(
                       child: Row(
                         children: <Widget>[
-                          Icon(Icons.notifications, color: Colors.lightBlue[100],),
+                          Icon(
+                            Icons.notifications, color: Colors.lightBlue[100],),
                           SizedBox(width: 16,),
                           CircleAvatar(
                             radius: 25,
                             backgroundColor: Colors.white,
                             child: ClipOval(
-                              child: Image.asset("images/ic_pet.png", fit: BoxFit.contain, width: 40),
+                              child: Image.asset(
+                                  "images/ic_pet.png", fit: BoxFit.contain,
+                                  width: 40),
                             ),
                           )
                         ],
@@ -91,10 +108,13 @@ class WalletHomeScreen extends StatelessWidget {
                 ),
 
                 Container(
-                   margin: EdgeInsets.symmetric(horizontal: 47),
-                   child: Text("Valor total", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.blue[100]),),
+                  margin: EdgeInsets.symmetric(horizontal: 47),
+                  child: Text("Valor total", style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: Colors.blue[100]),),
                 ),
-                SizedBox(height : 36),
+                SizedBox(height: 36),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,15 +125,18 @@ class WalletHomeScreen extends StatelessWidget {
                           Container(
                             decoration: BoxDecoration(
                                 color: Color.fromRGBO(243, 245, 248, 1),
-                                borderRadius: BorderRadius.all(Radius.circular(18))
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(18))
                             ),
-                            child: Icon(Icons.date_range, color: Colors.blue[900], size: 30,),
+                            child: Icon(Icons.date_range,
+                              color: Colors.blue[900], size: 30,),
                             padding: EdgeInsets.all(12),
                           ),
                           SizedBox(
                             height: 4,
                           ),
-                          Text("Enviar", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.blue[100]),),
+                          Text("Enviar", style: TextStyle(fontWeight: FontWeight
+                              .w700, fontSize: 14, color: Colors.blue[100]),),
                         ],
                       ),
                     ),
@@ -124,15 +147,20 @@ class WalletHomeScreen extends StatelessWidget {
                           Container(
                             decoration: BoxDecoration(
                                 color: Color.fromRGBO(243, 245, 248, 1),
-                                borderRadius: BorderRadius.all(Radius.circular(18))
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(18))
                             ),
-                            child: Icon(Icons.public, color: Colors.blue[900], size: 30,),
+                            child: Icon(Icons.public, color: Colors.blue[900],
+                              size: 30,),
                             padding: EdgeInsets.all(12),
                           ),
                           SizedBox(
                             height: 4,
                           ),
-                          Text("Transações", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.blue[100]),),
+                          Text("Transações", style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                              color: Colors.blue[100]),),
                         ],
                       ),
                     ),
@@ -143,20 +171,23 @@ class WalletHomeScreen extends StatelessWidget {
                           Container(
                             decoration: BoxDecoration(
                                 color: Color.fromRGBO(243, 245, 248, 1),
-                                borderRadius: BorderRadius.all(Radius.circular(18))
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(18))
                             ),
-                            child: Icon(Icons.attach_money, color: Colors.blue[900], size: 30,),
+                            child: Icon(Icons.attach_money,
+                              color: Colors.blue[900], size: 30,),
                             padding: EdgeInsets.all(12),
                           ),
                           SizedBox(
                             height: 4,
                           ),
-                          Text("Ganhos", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.blue[100]),),
+                          Text("Ganhos", style: TextStyle(fontWeight: FontWeight
+                              .w700, fontSize: 14, color: Colors.blue[100]),),
                         ],
                       ),
                     ),
 
-                  /*  Container(
+                    /*  Container(
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -184,11 +215,13 @@ class WalletHomeScreen extends StatelessWidget {
 
           //draggable sheet
           DraggableScrollableSheet(
-            builder: (context, scrollController){
+            builder: (context, scrollController) {
               return Container(
                 decoration: BoxDecoration(
                     color: Color.fromRGBO(243, 245, 248, 1),
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40))
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40))
                 ),
                 child: SingleChildScrollView(
                   child: Column(
@@ -199,8 +232,14 @@ class WalletHomeScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text("Transações Recentes", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 24, color: Colors.black),),
-                            Text("Ver todos", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.grey[800]),)
+                            Text("Transações Recentes", style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 24,
+                                color: Colors.black),),
+                            Text("Ver todos", style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: Colors.grey[800]),)
                           ],
                         ),
                         padding: EdgeInsets.symmetric(horizontal: 32),
@@ -213,13 +252,22 @@ class WalletHomeScreen extends StatelessWidget {
                         child: Row(
                           children: <Widget>[
                             Container(
-                              child: Text("Todos", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.grey[900]),),
+                              child: Text("Todos", style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                  color: Colors.grey[900]),),
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(color: Colors.grey[200],
+                                        blurRadius: 10.0,
+                                        spreadRadius: 4.5)
+                                  ]
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
                             ),
                             SizedBox(width: 16,),
                             Container(
@@ -232,15 +280,24 @@ class WalletHomeScreen extends StatelessWidget {
                                   SizedBox(
                                     width: 8,
                                   ),
-                                  Text("Completa", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.grey[900]),),
+                                  Text("Completa", style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                      color: Colors.grey[900]),),
                                 ],
                               ),
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(color: Colors.grey[200],
+                                        blurRadius: 10.0,
+                                        spreadRadius: 4.5)
+                                  ]
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
                             ),
 
                             SizedBox(width: 16,),
@@ -254,15 +311,24 @@ class WalletHomeScreen extends StatelessWidget {
                                   SizedBox(
                                     width: 8,
                                   ),
-                                  Text("Retiradas", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.grey[900]),),
+                                  Text("Retiradas", style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                      color: Colors.grey[900]),),
                                 ],
                               ),
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  boxShadow: [BoxShadow(color: Colors.grey[200], blurRadius: 10.0, spreadRadius: 4.5)]
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(color: Colors.grey[200],
+                                        blurRadius: 10.0,
+                                        spreadRadius: 4.5)
+                                  ]
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
                             )
                           ],
                         ),
@@ -271,39 +337,51 @@ class WalletHomeScreen extends StatelessWidget {
                       SizedBox(height: 16,),
                       //Container Listview for expenses and incomes
                       Container(
-                        child: Text("TODAY", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+                        child: Text("TODAY", style: TextStyle(fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey[500]),),
                         padding: EdgeInsets.symmetric(horizontal: 32),
                       ),
 
                       SizedBox(height: 16,),
 
                       ListView.builder(
-                        itemBuilder: (context, index){
+                        itemBuilder: (context, index) {
                           return Container(
                             margin: EdgeInsets.symmetric(horizontal: 32),
                             padding: EdgeInsets.all(16),
                             decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(20))
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(20))
                             ),
                             child: Row(
                               children: <Widget>[
                                 Container(
                                   decoration: BoxDecoration(
                                       color: Colors.grey[100],
-                                      borderRadius: BorderRadius.all(Radius.circular(18))
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(18))
                                   ),
-                                  child: Icon(Icons.date_range, color: Colors.lightBlue[900],),
+                                  child: Icon(Icons.date_range,
+                                    color: Colors.lightBlue[900],),
                                   padding: EdgeInsets.all(12),
                                 ),
 
                                 SizedBox(width: 16,),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: <Widget>[
-                                      Text("Payment", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.grey[900]),),
-                                      Text("Payment from Saad", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+                                      Text("Payment", style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.grey[900]),),
+                                      Text("Payment from Saad",
+                                        style: TextStyle(fontSize: 15,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.grey[500]),),
                                     ],
                                   ),
                                 ),
@@ -311,8 +389,14 @@ class WalletHomeScreen extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: <Widget>[
-                                    Text("+\$500.5", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.lightGreen),),
-                                    Text("26 Jan", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+                                    Text("+\$500.5", style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.lightGreen),),
+                                    Text("26 Jan", style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.grey[500]),),
                                   ],
                                 ),
                               ],
@@ -329,39 +413,51 @@ class WalletHomeScreen extends StatelessWidget {
                       SizedBox(height: 16,),
 
                       Container(
-                        child: Text("YESTERDAY", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+                        child: Text("YESTERDAY", style: TextStyle(fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey[500]),),
                         padding: EdgeInsets.symmetric(horizontal: 32),
                       ),
 
                       SizedBox(height: 16,),
 
                       ListView.builder(
-                        itemBuilder: (context, index){
+                        itemBuilder: (context, index) {
                           return Container(
                             margin: EdgeInsets.symmetric(horizontal: 32),
                             padding: EdgeInsets.all(16),
                             decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(20))
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(20))
                             ),
                             child: Row(
                               children: <Widget>[
                                 Container(
                                   decoration: BoxDecoration(
                                       color: Colors.grey[100],
-                                      borderRadius: BorderRadius.all(Radius.circular(18))
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(18))
                                   ),
-                                  child: Icon(Icons.directions_car, color: Colors.lightBlue[900],),
+                                  child: Icon(Icons.directions_car,
+                                    color: Colors.lightBlue[900],),
                                   padding: EdgeInsets.all(12),
                                 ),
 
                                 SizedBox(width: 16,),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: <Widget>[
-                                      Text("Petrol", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.grey[900]),),
-                                      Text("Payment from Saad", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+                                      Text("Petrol", style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.grey[900]),),
+                                      Text("Payment from Saad",
+                                        style: TextStyle(fontSize: 15,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.grey[500]),),
                                     ],
                                   ),
                                 ),
@@ -369,8 +465,14 @@ class WalletHomeScreen extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: <Widget>[
-                                    Text("-\$500.5", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.orange),),
-                                    Text("26 Jan", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.grey[500]),),
+                                    Text("-\$500.5", style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.orange),),
+                                    Text("26 Jan", style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.grey[500]),),
                                   ],
                                 ),
                               ],
