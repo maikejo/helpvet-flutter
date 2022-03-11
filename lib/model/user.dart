@@ -12,9 +12,10 @@ class User {
    String cpf;
    String telefone;
    String crmv;
+   bool isWallet;
 
   User({this.nome,this.email,this.imagemUrl,this.senha,this.tipo,this.dtCriacao,
-        this.diasPlano,this.ativado,this.cpf,this.telefone,this.crmv}
+        this.diasPlano,this.ativado,this.cpf,this.telefone,this.crmv,this.isWallet}
       );
 
   Map<String, Object> toJson() {
@@ -29,7 +30,8 @@ class User {
       'ativado' : ativado,
       'cpf': cpf,
       'telefone': telefone,
-      'crmv': crmv
+      'crmv': crmv,
+      'isWallet': isWallet
     };
   }
 
@@ -45,7 +47,8 @@ class User {
         ativado: doc['ativado'],
         cpf: doc['cpf'],
         telefone: doc['telefone'],
-        crmv: doc['crmv']
+        crmv: doc['crmv'],
+        isWallet: doc['isWallet']
     );
     return user;
   }

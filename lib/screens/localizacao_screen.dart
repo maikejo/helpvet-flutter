@@ -100,7 +100,10 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
           center: center, radius: rad, field: 'position', strictMode: true);
     });
 
+
     getCurrentLocation();
+
+
   }
 
   void _redirectLocalizacaoPetScreen() {
@@ -110,8 +113,12 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       _clinicasMarkers();
-      _controller.complete(controller);
-      mapController = controller;
+
+      if(_currentPosition != null){
+        _controller.complete(controller);
+        mapController = controller;
+      }
+
     });
   }
 
@@ -165,13 +172,10 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   }
 
   Future<Position> getCurrentLocation() async{
-
-    Geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-
+    Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true).listen(
+            (Position position) {
+          //print(position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
+          _currentPosition = position;
         try {
 
           if(_currentPosition != null){
@@ -195,11 +199,6 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         }
 
       });
-    }).catchError((e) {
-      print(e);
-    });
-
-
 
     setState(() {
       mapToggle = true;

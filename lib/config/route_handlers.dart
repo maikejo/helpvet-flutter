@@ -16,6 +16,8 @@ import 'package:flutter_finey/screens/qr_code_screen.dart';
 import 'package:flutter_finey/screens/timeline_screen.dart';
 import 'package:flutter_finey/screens/tutorial_screen.dart';
 import 'package:flutter_finey/screens/vacina_screen.dart';
+import 'package:flutter_finey/screens/wallet/create_wallet.dart';
+import 'package:flutter_finey/screens/wallet/wallet_home_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/signup_screen.dart';
 import '../screens/recuperar_senha_screen.dart';
@@ -169,4 +171,16 @@ var homeAdmHandler = new Handler(
 var listaVetAdmHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
       return new VeterinarioAdminScreen();
+    });
+
+
+var walletHomeHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+      return new WalletHomeScreen();
+    });
+
+
+var createWalletHomeHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+      return new CreateWalletScreen(isWalletCreated: null);
     });

@@ -65,7 +65,7 @@ dependencies:
   font_awesome_flutter: ^8.5.0
   geoflutterfire: ^2.0.3+8
   image: ^2.1.4
-  google_maps_place_picker: ^1.0.0
+  google_maps_place_picker: any
   simple_image_crop: ^0.1.3
   geocoder: ^0.2.1
   fledge: ^0.1.3

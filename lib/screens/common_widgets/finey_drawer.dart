@@ -24,6 +24,7 @@ class FineyDrawer extends StatelessWidget {
   final currentPath;
   final idAcessoVetDono;
   String tipoConta;
+  bool isWallet;
 
   Widget _userInfo(context) {
     return ResponsivePadding(
@@ -43,6 +44,7 @@ class FineyDrawer extends StatelessWidget {
                                 if (snapshot.data != null) {
 
                                   tipoConta = snapshot.data.tipo;
+                                  isWallet = snapshot.data.isWallet;
 
                                   return Center(
                                     child: Column(
@@ -228,6 +230,33 @@ class FineyDrawer extends StatelessWidget {
                             "images/icons/ic_report.png",
                             14.0,
                             16.0),
+
+                        StreamBuilder(
+                        stream: Auth.getUser(firebaseUser.email),
+                        builder: (BuildContext context,
+                        AsyncSnapshot<User> snapshot) {
+                          if (snapshot.data != null) {
+                            isWallet = snapshot.data.isWallet;
+
+                            if(isWallet){
+                              return _menuItem(
+                                  context,
+                                  "Wallet",
+                                  RouteConstants.ROUTE_WALLET_HOME,
+                                  "images/icons/ic_wallet_active.png",
+                                  16.0,
+                                  16.0);
+                            }else{
+                              return _menuItem(
+                                  context,
+                                  "Wallet",
+                                  RouteConstants.ROUTE_CREATE_WALLET,
+                                  "images/icons/ic_wallet_active.png",
+                                  16.0,
+                                  16.0);
+                            }
+                          }
+                        }),
 
                        Container(
                          height: 30,

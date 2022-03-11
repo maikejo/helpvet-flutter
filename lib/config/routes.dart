@@ -43,6 +43,8 @@ class RouteConstants {
   static const String ROUTE_HOME_PET = "/homePet";
   static const String ROUTE_HOME_ADM = "/homeAdm";
   static const String ROUTE_LISTA_VET_ADM = "/listaVetAdm";
+  static const String ROUTE_WALLET_HOME = "/wallet_home";
+  static const String ROUTE_CREATE_WALLET_HOME = "/create_wallet_home";
 }
 
 class Routes {
@@ -130,5 +132,14 @@ class Routes {
 
     router.define(RouteConstants.ROUTE_LISTA_VET_ADM,
         handler: listaVetAdmHandler);
+
+    //WALLET_HOME
+    router.define(RouteConstants.ROUTE_WALLET_HOME,
+        handler: walletHomeHandler);
+
+    //CREATE_WALLET_HOME
+    router.define(RouteConstants.ROUTE_CREATE_WALLET,
+        handler: createWalletHomeHandler);
+
   }
 }

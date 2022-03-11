@@ -52,6 +52,7 @@ class _SlideItemState extends State<SlideItem> {
                               ? AssetImage('images/ic_blank_image.png')
                               : CachedNetworkImageProvider("${widget.img}"),
                           radius: 20.0,
+
                         ),
                       ),
 

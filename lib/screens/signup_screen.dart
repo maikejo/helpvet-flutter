@@ -117,7 +117,8 @@ class _SignupScreenState extends State<SignupScreen> {
               ativado: true,
               cpf: _cpfController.text,
               telefone: _telefoneController.text,
-              crmv: _crmvController.text
+              crmv: _crmvController.text,
+              isWallet: false
           ));
 
           Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();

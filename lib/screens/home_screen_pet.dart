@@ -68,21 +68,21 @@ class _HomePetScreenState extends State<HomePetScreen> {
   ByteData byteDataImage;
   UserProvider userProvider;
 
-  BlockchainUtils blockchainUtils = BlockchainUtils();
-  var _myData;
+  //BlockchainUtils blockchainUtils = BlockchainUtils();
+  //var _myData;
 
   @override
-  Future<void> initState() async {
+  Future<void> initState()  {
     super.initState();
 
-    blockchainUtils.initialSetup();
+    //blockchainUtils.initialSetup();
 
-    WalletAddress walletAddressService = WalletAddress();
-    final mnemonic = walletAddressService.generateMnemonic();
-    final privateKey = await walletAddressService.getPrivateKey(mnemonic);
-    final publicKey = await walletAddressService.getPublicKey(privateKey);
-    print(privateKey);
-    print(publicKey);
+    //WalletAddress walletAddressService = WalletAddress();
+    //final mnemonic = walletAddressService.generateMnemonic();
+    //final privateKey = await walletAddressService.getPrivateKey(mnemonic);
+    //final publicKey = await walletAddressService.getPublicKey(privateKey);
+    //print(privateKey);
+    //print(publicKey);
     //blockchainUtils.createWallet();
 
     /*  blockchainUtils.initialSetup();
@@ -392,8 +392,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
     return age;
   }
 
-  Widget _buildWithConstraints(
-      BuildContext context, BoxConstraints constraints) {
+  Widget _buildWithConstraints(BuildContext context, BoxConstraints constraints) {
     final sizeConfig = SizeConfig(mediaQueryData: MediaQuery.of(context));
 
     var column = Column(
@@ -1621,8 +1620,7 @@ class _HomePetScreenState extends State<HomePetScreen> {
         ]);
 
     var constrainedBox = ConstrainedBox(
-        constraints:
-            constraints.copyWith(maxHeight: MediaQuery.of(context).size.height),
+        constraints: constraints.copyWith(maxHeight: MediaQuery.of(context).size.height),
         child: Container(
             color: Colors.white,
             //padding: EdgeInsets.only(bottom: CommonVariables(context: context).getScreenPaddingBottom()),
