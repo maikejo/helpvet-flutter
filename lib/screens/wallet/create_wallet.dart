@@ -3,9 +3,11 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_finey/blockchain/blockchain.dart';
 import 'package:flutter_finey/blockchain/wallet_address.dart';
 import 'package:flutter_finey/config/application.dart';
 import 'package:flutter_finey/config/routes.dart';
+import 'package:flutter_finey/model/user.dart';
 import 'package:flutter_finey/model/wallet.dart';
 import 'package:flutter_finey/screens/common_widgets/responsive_image.dart';
 import 'package:flutter_finey/screens/common_widgets/responsive_padding.dart';
@@ -22,18 +24,24 @@ class CreateWalletScreen extends StatefulWidget {
 
 class _CreateWalletScreenState extends State<CreateWalletScreen> {
   WalletAddress walletAddressService = WalletAddress();
+  BlockchainUtils blockchainUtils = BlockchainUtils();
   var mnemonic = null;
   var privateKey = null;
   var publicKey = null;
   Future<String> privateKeyRecuperada = null;
-
 
   _createWallet() async{
     mnemonic = walletAddressService.generateMnemonic();
     privateKey = await walletAddressService.getPrivateKey(mnemonic);
     publicKey = await walletAddressService.getPublicKey(privateKey);
     addWallet(privateKey, publicKey);
+
+    User user = await Auth.getDadosUser(Auth.user.email);
+
+    blockchainUtils.initialSetup();
+    blockchainUtils.createAccount(Auth.user.displayName, user.senha, Auth.user.email, privateKey);
   }
+
 
   static void addWallet(var privateKey, var publicKey) async {
     Wallet wallet = new Wallet(nome: 'Minha Carteira', privateKey: privateKey.toString(), address: publicKey.toString());

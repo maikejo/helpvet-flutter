@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
 
                     StreamBuilder<QuerySnapshot>(
-                        stream: db.collection('cadastro_pet').document(firebaseUser.email).collection("lista").snapshots(),
+                        stream: db.collection('cadastro_pet').document(Auth.user.email).collection("lista").snapshots(),
                         builder: (context, snapshot) {
 
                           if (snapshot.data != null) {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -12,10 +13,18 @@ import 'package:flutter_finey/config/application.dart';
 import 'package:flutter_finey/config/routes.dart';
 import 'package:flutter_finey/helper/map_helper.dart';
 import 'package:flutter_finey/helper/ui_helper.dart';
+import 'package:flutter_finey/main.dart';
+import 'package:flutter_finey/model/localizacao_pet.dart';
+import 'package:flutter_finey/service/BackgroundNotification.dart';
+import 'package:flutter_finey/service/auth.dart';
 import 'package:flutter_finey/service/google_maps_requests.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 //import 'package:location/location.dart';
 import 'localizacao_widgets/explore_content_widget.dart';
 import 'localizacao_widgets/explore_widget.dart';
@@ -28,7 +37,8 @@ import 'dart:ui' as uia;
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+
 
 class LocalizacaoScreen extends StatefulWidget {
 
@@ -88,10 +98,54 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   bool _permission = false;
   String error;
 
+  Position _previousPosition;
+  StreamSubscription<Position> _positionStream;
+  double _totalDistance = 0;
+  double _distancia_percorrida = null;
+
+  List<Position> locations = List<Position>();
+  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+
+  Geolocator geolocator = Geolocator();
+
+  Position userLocation2;
+
+  Position _position;
+  GoogleMapController _controller2;
+  LocalizacaoPet _localizacaoPet;
+
+  final oCcy = new NumberFormat("#,##0.00", "pt_BR");
+
+  static final CameraPosition _kInitialPosition = const CameraPosition(
+    target: LatLng(-16.0258844, -48.0721724),
+    zoom: 11.0,
+  );
+
+  static const fetchBackground = "fetchBackground";
+
+  static const String TAG = "BackGround_Work";
+  int _counterValue = 0;
+
   @override
   void initState() {
     super.initState();
 
+
+    WidgetsFlutterBinding.ensureInitialized();
+    Workmanager.initialize(
+        callbackDispatcher, // The top level function, aka callbackDispatcher
+        isInDebugMode: false // This should be false
+    );
+
+    Workmanager.registerPeriodicTask(
+      TAG,
+      "simplePeriodicTask",
+      initialDelay: Duration(seconds: 10),
+    );
+    loalData();
+
+    _getCurrentLocation();
+    _clinicasMarkers();
     geo = Geoflutterfire();
     GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
     stream = radius.switchMap((rad) {
@@ -99,27 +153,60 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
       return geo.collection(collectionRef: collectionReference).within(
           center: center, radius: rad, field: 'position', strictMode: true);
     });
-
-
-    getCurrentLocation();
-
-
   }
 
-  void _redirectLocalizacaoPetScreen() {
-    Application.router.navigateTo(context, RouteConstants.ROUTE_LOCALIZACAO_PET, transition: TransitionType.inFromBottom);
+  void loalData() async {
+    _counterValue =
+    await BackGroundWork.instance._getBackGroundCounterValue();
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void addReward(Position _currentPosition, double distancia_percorrida) async {
+   if(distancia_percorrida >= 100){
+     double recompensa = distancia_percorrida * 0.001 / 100;
+     final currencyFormatter = NumberFormat('#,##0.000');
+
+     LocalizacaoPet localizacaoPet = new LocalizacaoPet(distancia_percorrida: distancia_percorrida, recompensa: currencyFormatter.format(recompensa), localizacao_inicial: new GeoPoint(_currentPosition.latitude, _currentPosition.longitude));
+     Firestore.instance.document("localizacao_pet/${Auth.user.email}")
+         .setData(localizacaoPet.toJson());
+   }
+  }
+
+   Future<LocalizacaoPet> getLocalizacaoPet(String email) async{
+    DocumentSnapshot snapshot = await Firestore.instance.collection('localizacao_pet').document(email).get();
+
+    if (snapshot.data != null) {
+      var distanciaPercorrida = snapshot['distancia_percorrida'];
+      var recompensa = snapshot['recompensa'];
+
+      LocalizacaoPet localizacao_pet = new LocalizacaoPet(
+          distancia_percorrida: distanciaPercorrida,
+          recompensa: recompensa
+      );
+
+      _localizacaoPet = localizacao_pet;
+
+      return localizacao_pet;
+    } else {
+      return null;
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      _clinicasMarkers();
+    //setState(() {
+      _controller2 = controller;
+      mapController = controller;
+    // });
+  }
 
-      if(_currentPosition != null){
-        _controller.complete(controller);
-        mapController = controller;
-      }
 
-    });
+  void _redirectLocalizacaoPetScreen() {
+    Application.router.navigateTo(context, RouteConstants.ROUTE_LOCALIZACAO_PET, transition: TransitionType.inFromBottom);
   }
 
   void _addMarker(double lat, double lng,String nomeClinica,String endereco,String imagem) async {
@@ -171,41 +258,76 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     return byteData.buffer.asUint8List();
   }
 
-  Future<Position> getCurrentLocation() async{
-    Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true).listen(
-            (Position position) {
-          //print(position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
-          _currentPosition = position;
-        try {
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+    await Permission.location.request();
 
-          if(_currentPosition != null){
-            _addMarkerPet(_currentPosition.latitude, _currentPosition.longitude,'Meu Pet','Localização coleira gps');
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
 
-            if (mapController != null) {
-              mapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    _currentPosition = await _determinePosition();
+
+   Geolocator.getPositionStream().listen((Position position) {
+     _currentPosition = position;
+     locations.add(_currentPosition);
+
+      if (_currentPosition != null) {
+        if (mapController != null) {
+          mapController.animateCamera(
+              CameraUpdate.newCameraPosition(new CameraPosition(
                   bearing: 192.8334901395799,
-                  target: LatLng(_currentPosition.latitude, _currentPosition.longitude),
+                  target: LatLng(
+                      _currentPosition.latitude, _currentPosition.longitude),
                   tilt: 0,
                   zoom: 18.00)));
 
-              _addMarkerPet(_currentPosition.latitude, _currentPosition.longitude,'Meu Pet','Localização coleira gps');
-            }
-      }
-        } on PlatformException catch (e) {
-          if (e.code == 'PERMISSION_DENIED') {
-            error = 'Permission denied';
-          }
-          _currentPosition = null;
+          _addMarkerPet(
+              _currentPosition.latitude, _currentPosition.longitude, 'Meu Pet',
+              'Localização coleira gps');
         }
+      }
 
-      });
+      if (locations.length > 1) {
+        _previousPosition = locations.elementAt(locations.length - 2);
 
-    setState(() {
-      mapToggle = true;
-      _permission = true;
+        var _distanceBetweenLastTwoLocations = Geolocator.distanceBetween(
+          _previousPosition.latitude,
+          _previousPosition.longitude,
+          _currentPosition.latitude,
+          _currentPosition.longitude,
+        );
+        _totalDistance += _distanceBetweenLastTwoLocations;
+        print('Total Distance: $_totalDistance');
+        getLocalizacaoPet(Auth.user.email);
+
+        double totalDistancia =  _localizacaoPet.distancia_percorrida + _totalDistance;
+
+        addReward(_currentPosition, totalDistancia);
+      }
     });
 
-    return _currentPosition;
+
   }
 
   /// explore drag callback
@@ -284,37 +406,114 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         height: screenHeight,
         child: Stack(
           children: <Widget>[
-            _permission == true ? Container(
+            Container(
               height: MediaQuery.of(context).size.height,
               width: double.infinity,
-              child: mapToggle ?
-              GoogleMap(
-                //myLocationEnabled: true,
-                  markers: Set<Marker>.from(markers.values),
-                  initialCameraPosition: CameraPosition(target: LatLng(_currentPosition.latitude, _currentPosition.longitude),zoom: 16.0),
-                  onMapCreated: _onMapCreated,
-                  polylines: _localizacaoState.polyLines
-              ) :
-              Center(
-                child: SizedBox(
-                    child: new CircularProgressIndicator(
-                        valueColor:
-                        new AlwaysStoppedAnimation(
-                            Colors.blue),
-                        strokeWidth: 5.0),
-                    height: 50.0,
-                    width: 50.0),
-              ),
-            ) : SizedBox(),
+              child: GoogleMap(
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: _kInitialPosition,
+                        //myLocationEnabled: true,
+                        markers: Set<Marker>.from(markers.values),
+                        //polylines: _localizacaoState.polyLines,
 
-            /*  TextField(
-              cursorColor: Colors.black,
-              controller: destinationController,
-              textInputAction: TextInputAction.go,
-              onSubmitted: (value) {
-                _localizacaoState.sendRequest(LatLng(_currentLocation["latitude"], _currentLocation["longitude"]),LatLng(-8.886844130523066, 13.205616626023385));
-              },
-            ),*/
+                      ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 0, vertical: 60),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(width: 16),
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.white,
+                    child: ClipOval(
+                      child: Image.asset(
+                          "images/icons/ic_location_pet.png", fit: BoxFit.contain,
+                          width: 40),
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Container(
+                    alignment: Alignment.center,
+                    width: 160,
+                    height: 22,
+                    decoration: BoxDecoration(
+                        color: Colors.pinkAccent,
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(18))
+                    ),
+                    child: FutureBuilder(
+                          future: getLocalizacaoPet(Auth.user.email),
+                          builder: (BuildContext context, AsyncSnapshot<LocalizacaoPet> snapshot) {
+                          if (snapshot.data != null) {
+                           double totalDistance =  snapshot.data.distancia_percorrida + _totalDistance;
+
+                           return  Text('Distancia: ${totalDistance != null ? totalDistance > 1000 ? (totalDistance / 1000).toStringAsFixed(2)
+                                : totalDistance.toStringAsFixed(2) : 0} '
+                                '${totalDistance != null ? totalDistance > 1000 ? 'KM' : 'M' : 0}', style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: Colors.white));
+                          }else{
+                              return Text('Distancia: 0.00 HVT', style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: Colors.white));
+                              }
+                          })
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 0, vertical: 120),
+              child: Row(
+                children: <Widget>[
+              
+                  SizedBox(width: 16),
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.white,
+                    child: ClipOval(
+                      child: Image.asset(
+                          "images/ic_pet.png", fit: BoxFit.contain,
+                          width: 40),
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Container(
+                    alignment: Alignment.center,
+                    width: 135,
+                    height: 22,
+                    decoration: BoxDecoration(
+                        color: Colors.pinkAccent,
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(18))
+                    ),
+                    //margin: EdgeInsets.symmetric(horizontal: 72),
+                    child: FutureBuilder(
+                        future: getLocalizacaoPet(Auth.user.email),
+                        builder: (BuildContext context, AsyncSnapshot<LocalizacaoPet> snapshot) {
+                          if (snapshot.data != null) {
+                                return Text('Ganhos: ${snapshot.data.recompensa} HVT ', style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                    color: Colors.white)
+                                );
+
+                          } else {
+                            return Text('Ganhos: 0.00 HVT', style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: Colors.white));
+                          }
+                        }),
+                  ),
+
+                ],
+              ),
+            ),
 
             ExploreWidget(
               currentExplorePercent: currentExplorePercent,
@@ -354,33 +553,52 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               offsetX: -68,
               width: 68,
               height: 71,
-              icon: Icons.my_location,
+              icon: Icons.play_circle_fill,
               iconColor: Colors.pinkAccent,
-              onPanDown: _redirectLocalizacaoPetScreen,
+              onPanDown: null,
             ),
             MenuWidget(
                 currentMenuPercent: currentMenuPercent,
                 animateMenu: animateMenu),
+
+
           ],
         ),
       ),
     );
   }
 
-  @override
-  void dispose() {
 
-    if (_locationSubscription != null) {
-      _locationSubscription.cancel();
-    }
 
-    animationControllerExplore?.dispose();
-    animationControllerSearch?.dispose();
-    animationControllerMenu?.dispose();
-    radius.close();
+}
 
-    super.dispose();
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async {
+    //print(TAG + "callbackDispatcher");
+    int value =
+    await BackGroundWork.instance._getBackGroundCounterValue();
+    BackGroundWork.instance._loadCounterValue(value + 1);
+    return Future.value(true);
+  });
+}
 
+class BackGroundWork {
+  BackGroundWork._privateConstructor();
+
+  static final BackGroundWork _instance =
+  BackGroundWork._privateConstructor();
+
+  static BackGroundWork get instance => _instance;
+
+  _loadCounterValue(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('BackGroundCounterValue', value);
   }
 
+  Future<int> _getBackGroundCounterValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return bool
+    int counterValue = prefs.getInt('BackGroundCounterValue') ?? 0;
+    return counterValue;
+  }
 }

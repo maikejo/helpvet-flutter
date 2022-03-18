@@ -11,6 +11,7 @@ def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keystoreProperties = new Properties()
@@ -31,7 +32,7 @@ android {
        /* release {
             keyAlias keystoreProperties['pethomecare']
             keyPassword keystoreProperties['pethomecare']
-            storeFile keystoreProperties['D:\\Projetos\\heplvet\\android\app\\pethomecare_release.jks']
+            storeFile keystoreProperties['D:\\Projetos\\helpvet\\android\app\\pethomecare_release.jks']
             storePassword keystoreProperties['pethomecare']
         }*/
     }
@@ -62,6 +63,10 @@ android {
     }*/
 
     compileSdkVersion 30
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 
     lintOptions {
         disable 'InvalidPackage'
@@ -104,6 +109,37 @@ flutter {
     source '../..'
 }
 
+
+configurations.all
+        {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == 'androidx.room'
+                        && !details.requested.name.contains('room-runtime')) {
+                    details.useVersion "2.4.1"
+                }
+                if (details.requested.group == 'androidx.room'
+                        && !details.requested.name.contains('room-testing')) {
+                    details.useVersion "2.4.1"
+                }
+                if (details.requested.group == 'androidx.room'
+                        && !details.requested.name.contains('room-rxjava2')) {
+                    details.useVersion "2.4.1"
+                }
+                if (details.requested.group == 'androidx.room'
+                        && !details.requested.name.contains('room-common')) {
+                    details.useVersion "2.4.1"
+                }
+                if (details.requested.group == 'androidx.room'
+                        && !details.requested.name.contains('room-migration')) {
+                    details.useVersion "2.4.1"
+                }
+                if (details.requested.group == 'androidx.room'
+                        && !details.requested.name.contains('room-compiler')) {
+                    details.useVersion "2.4.1"
+                }
+            }
+        }
+
 dependencies {
     constraints {
         implementation('io.grpc:grpc-core') {
@@ -112,9 +148,14 @@ dependencies {
             }
         }
     }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    //def work_version = "2.4.1"
+    //implementation "androidx.work:work-runtime:$work_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     //implementation "com.google.firebase:firebase-iid:17.0.2"
   /*  api 'com.google.firebase:firebase-ml-vision-image-label-model:20.0.2'
     api 'com.google.firebase:firebase-ml-vision-face-model:20.0.2'*/
@@ -127,6 +168,7 @@ dependencies {
     //implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.8.0'
     //implementation 'com.google.ar.sceneform:core:1.8.0'
     //implementation 'com.google.ar:core:1.8.0'
+    //api 'com.google.android.gms:play-services-location:16.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
 //apply plugin: 'com.google.firebase.crashlytics'

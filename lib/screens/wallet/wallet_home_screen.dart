@@ -18,7 +18,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
   var simbolo = null;
   final bool _running = true;
 
-  Stream<String> _clock() async* {
+  Stream<String> getSimboloToken() async* {
     while (_running) {
       await Future<void>.delayed(const Duration(seconds: 1));
 
@@ -119,7 +119,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
 
                     //Icon(Icons.backspace_rounded, color: Colors.lightBlue[100],),
                     StreamBuilder(
-                      stream: _clock(),
+                      stream: getSimboloToken(),
                       builder: (context, AsyncSnapshot<String> snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const CircularProgressIndicator();

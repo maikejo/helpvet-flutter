@@ -51,31 +51,38 @@ class MapButton extends StatelessWidget {
           : null,
       child: Opacity(
         opacity: 1 - (currentSearchPercent + currentExplorePercent),
-        child: Container(
-          width: realW(width),
-          height: realH(height),
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left: realW(17)),
-          child: Icon(
-            icon,
-            size: realW(34),
-            color: iconColor ?? Colors.black,
+        child: GestureDetector(
+          onTap: () {
+            onPanDown();
+          },
+          child:  Container(
+            width: realW(width),
+            height: realH(height),
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(left: realW(17)),
+            child: Icon(
+              icon,
+              size: realW(34),
+              color: iconColor ?? Colors.black,
+            ),
+            decoration: BoxDecoration(
+                color: gradient == null ? Colors.white : null,
+                gradient: gradient,
+                borderRadius: isRight
+                    ? BorderRadius.only(
+                    bottomLeft: Radius.circular(realW(36)),
+                    topLeft: Radius.circular(realW(36)))
+                    : BorderRadius.only(
+                    bottomRight: Radius.circular(realW(36)),
+                    topRight: Radius.circular(realW(36))),
+                boxShadow: [
+                  BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.3), blurRadius: realW(36)),
+                ]),
           ),
-          decoration: BoxDecoration(
-              color: gradient == null ? Colors.white : null,
-              gradient: gradient,
-              borderRadius: isRight
-                  ? BorderRadius.only(
-                      bottomLeft: Radius.circular(realW(36)),
-                      topLeft: Radius.circular(realW(36)))
-                  : BorderRadius.only(
-                      bottomRight: Radius.circular(realW(36)),
-                      topRight: Radius.circular(realW(36))),
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.3), blurRadius: realW(36)),
-              ]),
-        ),
+        )
+
+
       ),
     );
   }
