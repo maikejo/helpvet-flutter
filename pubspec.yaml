@@ -75,8 +75,8 @@ dependencies:
   arcore_flutter_plugin: ^0.0.5+1
   web_socket_channel: ^1.2.0
   flutter_dotenv: ^5.0.2
-  workmanager: ^0.2.3
-
+  background_locator: ^1.6.12
+  location_permissions: ^3.0.0+1
 
   web3dart: any
   ed25519_hd_key: any
@@ -90,6 +90,15 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
+  plugin:
+    platforms:
+      android:
+        package: rekab.app.background_locator
+        pluginClass: BackgroundLocatorPlugin
+      ios:
+        pluginClass: BackgroundLocatorPlugin
+
+
   uses-material-design: true
 
   assets:

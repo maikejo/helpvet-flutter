@@ -4,6 +4,10 @@ import 'dart:isolate';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
+import 'package:background_locator/background_locator.dart';
+import 'package:background_locator/location_dto.dart';
+import 'package:background_locator/settings/android_settings.dart';
+import 'package:background_locator/settings/ios_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/foundation.dart';
@@ -18,13 +22,17 @@ import 'package:flutter_finey/model/localizacao_pet.dart';
 import 'package:flutter_finey/service/BackgroundNotification.dart';
 import 'package:flutter_finey/service/auth.dart';
 import 'package:flutter_finey/service/google_maps_requests.dart';
+import 'package:flutter_finey/util/file_manager.dart';
+import 'package:flutter_finey/util/location_callback_handler.dart';
+import 'package:flutter_finey/util/location_service_repository.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:location_permissions/location_permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:workmanager/workmanager.dart';
+//import 'package:workmanager/workmanager.dart';
 //import 'package:location/location.dart';
 import 'localizacao_widgets/explore_content_widget.dart';
 import 'localizacao_widgets/explore_widget.dart';
@@ -36,8 +44,10 @@ import 'dart:ui' as ui show Image;
 import 'dart:ui' as uia;
 import 'dart:typed_data';
 import 'dart:ui';
-
-
+import 'package:background_locator/settings/ios_settings.dart';
+import 'package:background_locator/settings/locator_settings.dart' as locateSettings;
+import 'package:background_locator/settings/android_settings.dart';
+import 'package:location_permissions/location_permissions.dart' as permissionSettings;
 
 
 class LocalizacaoScreen extends StatefulWidget {
@@ -121,28 +131,34 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     zoom: 11.0,
   );
 
-  static const fetchBackground = "fetchBackground";
+  ReceivePort port = ReceivePort();
 
-  static const String TAG = "BackGround_Work";
-  int _counterValue = 0;
+  String logStr = '';
+  bool isRunning;
+  LocationDto lastLocation;
+
+  bool isPlay = false;
 
   @override
   void initState() {
     super.initState();
 
+    if (IsolateNameServer.lookupPortByName(
+        LocationServiceRepository.isolateName) !=
+        null) {
+      IsolateNameServer.removePortNameMapping(
+          LocationServiceRepository.isolateName);
+    }
 
-    WidgetsFlutterBinding.ensureInitialized();
-    Workmanager.initialize(
-        callbackDispatcher, // The top level function, aka callbackDispatcher
-        isInDebugMode: false // This should be false
-    );
+    IsolateNameServer.registerPortWithName(
+        port.sendPort, LocationServiceRepository.isolateName);
 
-    Workmanager.registerPeriodicTask(
-      TAG,
-      "simplePeriodicTask",
-      initialDelay: Duration(seconds: 10),
+    port.listen(
+          (dynamic data) async {
+        await updateUI(data);
+      },
     );
-    loalData();
+    initPlatformState();
 
     _getCurrentLocation();
     _clinicasMarkers();
@@ -155,15 +171,118 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     });
   }
 
-  void loalData() async {
-    _counterValue =
-    await BackGroundWork.instance._getBackGroundCounterValue();
-    setState(() {});
-  }
-
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<void> updateUI(LocationDto data) async {
+    final log = await FileManager.readLogFile();
+
+    await _updateNotificationText(data);
+
+    setState(() {
+      if (data != null) {
+        lastLocation = data;
+      }
+      logStr = log;
+    });
+  }
+
+  Future<void> _updateNotificationText(LocationDto data) async {
+    if (data == null) {
+      return;
+    }
+
+    await BackgroundLocator.updateNotificationText(
+        title: "Sua localização",
+        msg: "${DateTime.now()}",
+        bigMsg: "${data.latitude}, ${data.longitude}");
+  }
+
+  Future<void> initPlatformState() async {
+    print('Initializing...');
+    await BackgroundLocator.initialize();
+    logStr = await FileManager.readLogFile();
+    print('Initialization done');
+    final _isRunning = await BackgroundLocator.isServiceRunning();
+    setState(() {
+      isRunning = _isRunning;
+    });
+    print('Running ${isRunning.toString()}');
+  }
+
+  void onStop() async {
+    await BackgroundLocator.unRegisterLocationUpdate();
+    final _isRunning = await BackgroundLocator.isServiceRunning();
+    setState(() {
+      isRunning = _isRunning;
+      isPlay = false;
+    });
+  }
+
+  void _onStart() async {
+    if (await _checkLocationPermission()) {
+      await _startLocator();
+      final _isRunning = await BackgroundLocator.isServiceRunning();
+
+      setState(() {
+        isRunning = _isRunning;
+        lastLocation = null;
+        isPlay = true;
+      });
+    } else {
+      // show error
+    }
+  }
+
+  Future<bool> _checkLocationPermission() async {
+    final access = await LocationPermissions().checkPermissionStatus();
+    switch (access) {
+      case permissionSettings.PermissionStatus.unknown:
+      case permissionSettings.PermissionStatus.denied:
+      case permissionSettings.PermissionStatus.restricted:
+        final permission = await LocationPermissions().requestPermissions(
+          permissionLevel: LocationPermissionLevel.locationAlways,
+        );
+        if (permission == permissionSettings.PermissionStatus.granted) {
+          return true;
+        } else {
+          return false;
+        }
+        break;
+      case permissionSettings.PermissionStatus.granted:
+        return true;
+        break;
+      default:
+        return false;
+        break;
+    }
+  }
+
+  Future<void> _startLocator() async{
+    Map<String, dynamic> data = {'countInit': 1};
+    return await BackgroundLocator.registerLocationUpdate(LocationCallbackHandler.callback,
+        initCallback: LocationCallbackHandler.initCallback,
+        initDataCallback: data,
+        disposeCallback: LocationCallbackHandler.disposeCallback,
+        iosSettings: IOSSettings(
+            accuracy: locateSettings.LocationAccuracy.NAVIGATION, distanceFilter: 0),
+        autoStop: false,
+        androidSettings: AndroidSettings(
+            accuracy: locateSettings.LocationAccuracy.NAVIGATION,
+            interval: 5,
+            distanceFilter: 0,
+            client: LocationClient.google,
+            androidNotificationSettings: AndroidNotificationSettings(
+                notificationChannelName: 'Location tracking',
+                notificationTitle: 'Start Location Tracking',
+                notificationMsg: 'Track location in background',
+                notificationBigMsg:
+                'Background location is on to keep the app up-tp-date with your location. This is required for main features to work properly when the app is not running.',
+                notificationIconColor: Colors.grey,
+                notificationTapCallback:
+                LocationCallbackHandler.notificationCallback)));
   }
 
   void addReward(Position _currentPosition, double distancia_percorrida) async {
@@ -470,7 +589,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               margin: EdgeInsets.symmetric(horizontal: 0, vertical: 120),
               child: Row(
                 children: <Widget>[
-              
+
                   SizedBox(width: 16),
                   CircleAvatar(
                     radius: 25,
@@ -553,9 +672,9 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               offsetX: -68,
               width: 68,
               height: 71,
-              icon: Icons.play_circle_fill,
+              icon: isPlay == false ? Icons.play_circle_fill : Icons.pause_circle_filled,
               iconColor: Colors.pinkAccent,
-              onPanDown: null,
+              onPanDown: isPlay == false ? _onStart : onStop,
             ),
             MenuWidget(
                 currentMenuPercent: currentMenuPercent,
@@ -568,37 +687,5 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     );
   }
 
-
-
 }
 
-void callbackDispatcher() {
-  Workmanager.executeTask((task, inputData) async {
-    //print(TAG + "callbackDispatcher");
-    int value =
-    await BackGroundWork.instance._getBackGroundCounterValue();
-    BackGroundWork.instance._loadCounterValue(value + 1);
-    return Future.value(true);
-  });
-}
-
-class BackGroundWork {
-  BackGroundWork._privateConstructor();
-
-  static final BackGroundWork _instance =
-  BackGroundWork._privateConstructor();
-
-  static BackGroundWork get instance => _instance;
-
-  _loadCounterValue(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('BackGroundCounterValue', value);
-  }
-
-  Future<int> _getBackGroundCounterValue() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return bool
-    int counterValue = prefs.getInt('BackGroundCounterValue') ?? 0;
-    return counterValue;
-  }
-}

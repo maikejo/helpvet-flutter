@@ -71,6 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  background_locator:
+    dependency: "direct main"
+    description:
+      name: background_locator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.6.12"
   badges:
     dependency: "direct main"
     description:
@@ -627,6 +634,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.1"
+  location_permissions:
+    dependency: "direct main"
+    description:
+      name: location_permissions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0+1"
   logging:
     dependency: transitive
     description:
@@ -1038,13 +1052,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
-  workmanager:
-    dependency: "direct main"
-    description:
-      name: workmanager
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.4"
   xml:
     dependency: transitive
     description:

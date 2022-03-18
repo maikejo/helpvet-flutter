@@ -110,6 +110,7 @@ flutter {
 }
 
 
+/*
 configurations.all
         {
             resolutionStrategy.eachDependency { details ->
@@ -139,6 +140,7 @@ configurations.all
                 }
             }
         }
+*/
 
 dependencies {
     constraints {
