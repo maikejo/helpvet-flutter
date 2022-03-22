@@ -15,6 +15,7 @@ class MapButton extends StatelessWidget {
   final bool isRight;
   final Gradient gradient;
   final Function() onPanDown;
+  final Text text;
 
   const MapButton(
       {Key key,
@@ -28,7 +29,8 @@ class MapButton extends StatelessWidget {
       this.iconColor,
       this.isRight = true,
       this.gradient,
-        this.onPanDown
+        this.onPanDown,
+        this.text
       })
       : assert(currentExplorePercent != null),
         assert(currentExplorePercent != null),
@@ -37,7 +39,9 @@ class MapButton extends StatelessWidget {
         assert(width != null),
         assert(height != null),
         assert(icon != null),
+        assert(text != null),
         super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,33 +59,38 @@ class MapButton extends StatelessWidget {
           onTap: () {
             onPanDown();
           },
-          child:  Container(
-            width: realW(width),
-            height: realH(height),
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: realW(17)),
-            child: Icon(
-              icon,
-              size: realW(34),
-              color: iconColor ?? Colors.black,
-            ),
-            decoration: BoxDecoration(
-                color: gradient == null ? Colors.white : null,
-                gradient: gradient,
-                borderRadius: isRight
-                    ? BorderRadius.only(
-                    bottomLeft: Radius.circular(realW(36)),
-                    topLeft: Radius.circular(realW(36)))
-                    : BorderRadius.only(
-                    bottomRight: Radius.circular(realW(36)),
-                    topRight: Radius.circular(realW(36))),
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.3), blurRadius: realW(36)),
-                ]),
+          child:
+              Container(
+                width: realW(width),
+                height: realH(height),
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: realW(17)),
+                decoration: BoxDecoration(
+                    color: gradient == null ? Colors.white : null,
+                    gradient: gradient,
+                    borderRadius: isRight
+                        ? BorderRadius.only(
+                        bottomLeft: Radius.circular(realW(36)),
+                        topLeft: Radius.circular(realW(36)))
+                        : BorderRadius.only(
+                        bottomRight: Radius.circular(realW(36)),
+                        topRight: Radius.circular(realW(36))),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.3), blurRadius: realW(36)),
+                    ]),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      icon,
+                      size: realW(34),
+                      color: iconColor ?? Colors.black,
+                    ),
+                    text
+                  ],
+              ),
           ),
         )
-
 
       ),
     );

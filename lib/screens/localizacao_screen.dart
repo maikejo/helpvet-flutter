@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'dart:ui';
 import 'package:background_locator/background_locator.dart';
 import 'package:background_locator/location_dto.dart';
@@ -13,6 +14,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_finey/config/application.dart';
 import 'package:flutter_finey/config/routes.dart';
 import 'package:flutter_finey/helper/map_helper.dart';
@@ -25,11 +27,13 @@ import 'package:flutter_finey/service/google_maps_requests.dart';
 import 'package:flutter_finey/util/file_manager.dart';
 import 'package:flutter_finey/util/location_callback_handler.dart';
 import 'package:flutter_finey/util/location_service_repository.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:location_permissions/location_permissions.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:workmanager/workmanager.dart';
@@ -42,13 +46,12 @@ import 'localizacao_widgets/menu_widget.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:ui' as ui show Image;
 import 'dart:ui' as uia;
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:background_locator/settings/ios_settings.dart';
 import 'package:background_locator/settings/locator_settings.dart' as locateSettings;
 import 'package:background_locator/settings/android_settings.dart';
 import 'package:location_permissions/location_permissions.dart' as permissionSettings;
-
+import 'package:image/image.dart' as im;
 
 class LocalizacaoScreen extends StatefulWidget {
 
@@ -113,6 +116,10 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   double _totalDistance = 0;
   double _distancia_percorrida = null;
 
+  Map<PolylineId, Polyline> polylines = {};
+  PolylinePoints polylinePoints = PolylinePoints();
+  String googleAPiKey = "AIzaSyAa_8v6xQL2wdkxZ8zk5iQu6N963ep5byw";
+
   List<Position> locations = List<Position>();
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 
@@ -123,6 +130,8 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   Position _position;
   GoogleMapController _controller2;
   LocalizacaoPet _localizacaoPet;
+  static var httpClient = new HttpClient();
+
 
   final oCcy = new NumberFormat("#,##0.00", "pt_BR");
 
@@ -138,10 +147,14 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   LocationDto lastLocation;
 
   bool isPlay = false;
+  Stopwatch _stopwatch;
+
 
   @override
   void initState() {
     super.initState();
+
+    _stopwatch = Stopwatch();
 
     if (IsolateNameServer.lookupPortByName(
         LocationServiceRepository.isolateName) !=
@@ -169,6 +182,20 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
       return geo.collection(collectionRef: collectionReference).within(
           center: center, radius: rad, field: 'position', strictMode: true);
     });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller2 = controller;
+    mapController = controller;
+  }
+
+  void handleStartStop() {
+    if (_stopwatch.isRunning) {
+      _stopwatch.stop();
+    } else {
+      _stopwatch.start();
+    }
+    setState(() {});    // re-render the page
   }
 
   @override
@@ -218,6 +245,8 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     setState(() {
       isRunning = _isRunning;
       isPlay = false;
+      _stopwatch.stop();
+      _locationSubscription?.pause();
     });
   }
 
@@ -230,6 +259,8 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         isRunning = _isRunning;
         lastLocation = null;
         isPlay = true;
+        _stopwatch.start();
+        _locationSubscription?.resume();
       });
     } else {
       // show error
@@ -296,7 +327,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
    }
   }
 
-   Future<LocalizacaoPet> getLocalizacaoPet(String email) async{
+  Future<LocalizacaoPet> getLocalizacaoPet(String email) async{
     DocumentSnapshot snapshot = await Firestore.instance.collection('localizacao_pet').document(email).get();
 
     if (snapshot.data != null) {
@@ -314,18 +345,6 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     } else {
       return null;
     }
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    //setState(() {
-      _controller2 = controller;
-      mapController = controller;
-    // });
-  }
-
-
-  void _redirectLocalizacaoPetScreen() {
-    Application.router.navigateTo(context, RouteConstants.ROUTE_LOCALIZACAO_PET, transition: TransitionType.inFromBottom);
   }
 
   void _addMarker(double lat, double lng,String nomeClinica,String endereco,String imagem) async {
@@ -351,7 +370,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     marker = Marker(
       markerId: id,
       position: LatLng(lat, lng),
-      icon: BitmapDescriptor.fromBytes(imageData),
+      icon: await getMarkerIcon("https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Favatar%2Favatar?alt=media&token=14cee457-f35d-4be5-8add-4bc292b47f7e", Size(150.0, 150.0)),
       infoWindow: InfoWindow(title: nomeClinica, snippet: endereco),
     );
     setState(() {
@@ -407,7 +426,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   Future<void> _getCurrentLocation() async {
     _currentPosition = await _determinePosition();
 
-   Geolocator.getPositionStream().listen((Position position) {
+     _locationSubscription = Geolocator.getPositionStream(desiredAccuracy: LocationAccuracy.best).listen((Position position) {
      _currentPosition = position;
      locations.add(_currentPosition);
 
@@ -438,6 +457,9 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         );
         _totalDistance += _distanceBetweenLastTwoLocations;
         print('Total Distance: $_totalDistance');
+
+        getDirections(_previousPosition, _currentPosition);
+
         getLocalizacaoPet(Auth.user.email);
 
         double totalDistancia =  _localizacaoPet.distancia_percorrida + _totalDistance;
@@ -446,10 +468,40 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
       }
     });
 
-
   }
 
-  /// explore drag callback
+  getDirections(Position previousPosition, Position currentPossition) async {
+    List<LatLng> polylineCoordinates = [];
+
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleAPiKey,
+      PointLatLng(-16.0258844, -48.0721724),
+      PointLatLng(currentPossition.latitude, currentPossition.longitude),
+      travelMode: TravelMode.walking,
+    );
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    } else {
+      print(result.errorMessage);
+    }
+    addPolyLine(polylineCoordinates);
+  }
+
+  addPolyLine(List<LatLng> polylineCoordinates) {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.deepPurpleAccent,
+      points: polylineCoordinates,
+      width: 16,
+    );
+    polylines[id] = polyline;
+    setState(() {});
+  }
+
   void onExploreVerticalUpdate(details) {
     offsetExplore -= details.delta.dy;
     if (offsetExplore > 644) {
@@ -507,8 +559,6 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     animationControllerMenu.forward();
   }
 
-  LocalizacaoState _localizacaoState = new LocalizacaoState();
-
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -530,10 +580,11 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               width: double.infinity,
               child: GoogleMap(
                         onMapCreated: _onMapCreated,
+                        zoomControlsEnabled: false,
                         initialCameraPosition: _kInitialPosition,
                         //myLocationEnabled: true,
                         markers: Set<Marker>.from(markers.values),
-                        //polylines: _localizacaoState.polyLines,
+                        polylines: Set<Polyline>.of(polylines.values),
 
                       ),
             ),
@@ -603,7 +654,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
                   SizedBox(width: 4),
                   Container(
                     alignment: Alignment.center,
-                    width: 135,
+                    width: 150,
                     height: 22,
                     decoration: BoxDecoration(
                         color: Colors.pinkAccent,
@@ -647,34 +698,17 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
               currentExplorePercent: currentExplorePercent,
             ),
 
-            //directions button
-            /* MapButton(
-              currentSearchPercent: currentSearchPercent,
-              currentExplorePercent: currentExplorePercent,
-              bottom: 243,
-              offsetX: -68,
-              width: 68,
-              height: 71,
-              icon: Icons.directions,
-              iconColor: Colors.white,
-              gradient: const LinearGradient(colors: [
-                Color(0xFF59C2FF),
-                Color(0xFF1270E3),
-              ]),
-              onPanDown: _redirectLocalizacaoPetScreen,
-            ),*/
-
-
             MapButton(
               currentSearchPercent: currentSearchPercent,
               currentExplorePercent: currentExplorePercent,
               bottom: 148,
               offsetX: -68,
-              width: 68,
+              width: 110,
               height: 71,
               icon: isPlay == false ? Icons.play_circle_fill : Icons.pause_circle_filled,
               iconColor: Colors.pinkAccent,
               onPanDown: isPlay == false ? _onStart : onStop,
+              text: Text(formatTime(_stopwatch.elapsedMilliseconds), style: TextStyle(fontSize: 18.0)),
             ),
             MenuWidget(
                 currentMenuPercent: currentMenuPercent,
@@ -685,6 +719,147 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         ),
       ),
     );
+  }
+
+  String formatTime(int milliseconds) {
+    var secs = milliseconds ~/ 1000;
+    var hours = (secs ~/ 3600).toString().padLeft(2, '0');
+    var minutes = ((secs % 3600) ~/ 60).toString().padLeft(2, '0');
+    var seconds = (secs % 60).toString().padLeft(2, '0');
+    return "$hours:$minutes:$seconds";
+  }
+
+  Future<BitmapDescriptor> getMarkerIcon(String imagePath, Size size) async {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+
+    final Radius radius = Radius.circular(size.width / 2);
+
+    final Paint tagPaint = Paint()..color = Colors.blue;
+    final double tagWidth = 40.0;
+
+    final Paint shadowPaint = Paint()..color = Colors.blue.withAlpha(100);
+    final double shadowWidth = 15.0;
+
+    final Paint borderPaint = Paint()..color = Colors.white;
+    final double borderWidth = 3.0;
+
+    final double imageOffset = shadowWidth + borderWidth;
+
+    // Add shadow circle
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(
+              0.0,
+              0.0,
+              size.width,
+              size.height
+          ),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        shadowPaint);
+
+    // Add border circle
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(
+              shadowWidth,
+              shadowWidth,
+              size.width - (shadowWidth * 2),
+              size.height - (shadowWidth * 2)
+          ),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        borderPaint);
+
+    // Add tag circle
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(
+              size.width - tagWidth,
+              0.0,
+              tagWidth,
+              tagWidth
+          ),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        tagPaint);
+
+    // Add tag text
+   /* TextSpan span = new TextSpan(style: new TextStyle(color: Colors.blue[800]), text: 'Teste');
+    TextPainter textPainter = TextPainter(text: span, textAlign: TextAlign.left);
+    textPainter.text = TextSpan(
+      text: '1',
+      style: TextStyle(fontSize: 20.0, color: Colors.white),
+    );
+
+    textPainter.layout();
+    textPainter.paint(
+        canvas,
+        Offset(
+            size.width - tagWidth / 2 - textPainter.width / 2,
+            tagWidth / 2 - textPainter.height / 2
+        )
+    );*/
+
+    // Oval for the image
+    Rect oval = Rect.fromLTWH(
+        imageOffset,
+        imageOffset,
+        size.width - (imageOffset * 2),
+        size.height - (imageOffset * 2)
+    );
+
+    // Add path for oval image
+    canvas.clipPath(Path()
+      ..addOval(oval));
+
+    // Add image
+    ui.Image image = await getImageFromPath(imagePath); // Alternatively use your own method to get the image
+    paintImage(canvas: canvas, image: image, rect: oval, fit: BoxFit.fitWidth);
+
+    // Convert canvas to image
+    final ui.Image markerAsImage = await pictureRecorder.endRecording().toImage(
+        size.width.toInt(),
+        size.height.toInt()
+    );
+
+    // Convert image to bytes
+    final ByteData byteData = await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List uint8List = byteData.buffer.asUint8List();
+
+    return BitmapDescriptor.fromBytes(uint8List);
+  }
+
+  Future<ui.Image> getImageFromPath(String imagePath) async {
+    File imageFile = await _downloadFile(imagePath, "border");
+    Uint8List imageBytes = imageFile.readAsBytesSync();
+    final Completer<ui.Image> completer = new Completer();
+
+    ui.decodeImageFromList(imageBytes, (ui.Image img) {
+      return completer.complete(img);
+    });
+
+    return completer.future;
+  }
+
+  Future<File> _downloadFile(String url, String filename) async {
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+    var bytes = await consolidateHttpClientResponseBytes(response);
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$dir/$filename');
+    await file.writeAsBytes(bytes);
+    return file;
   }
 
 }

@@ -44,8 +44,8 @@ class BlockchainUtils {
     return myData;
   }
 
-  Future getBalance() async {
-    List<dynamic> result = await query("balance", [wallet_address]);
+  Future getBalanceOf(EthereumAddress address) async {
+    List<dynamic> result = await query("balanceOf", [address]);
     var myData = result[0];
     return myData;
   }
@@ -54,6 +54,12 @@ class BlockchainUtils {
     address = wallet_address;
     var bigAmount = BigInt.from(amount);
     var response = await submit("transfer", [address, bigAmount], privateKey);
+    return response;
+  }
+
+  Future<String> transferFrom(EthereumAddress fromAddress,EthereumAddress toAddress, double amount, String privateKey) async {
+    var bigAmount = BigInt.from(amount);
+    var response = await submit("transferFrom", [fromAddress,toAddress,bigAmount], privateKey);
     return response;
   }
 
