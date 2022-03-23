@@ -4,17 +4,17 @@ class Wallet {
   final String nome;
   final String privateKey;
   final String address;
-  final bool contrato_aprovado;
+  final bool contratoAprovado;
 
   Wallet(
-      {this.nome, this.privateKey, this.address , this.contrato_aprovado});
+      {this.nome, this.privateKey, this.address , this.contratoAprovado});
 
   Map<String, Object> toJson() {
     return {
       'nome': nome,
       'privateKey': privateKey,
       'address': address,
-      'contrato_aprovado': contrato_aprovado
+      'contratoAprovado': contratoAprovado
     };
   }
 
@@ -23,7 +23,7 @@ class Wallet {
         nome: doc['nome'],
         privateKey: doc['privateKey'],
         address: doc['address'],
-        contrato_aprovado: doc['contrato_aprovado']
+        contratoAprovado: doc['contratoAprovado']
     );
     return wallet;
   }

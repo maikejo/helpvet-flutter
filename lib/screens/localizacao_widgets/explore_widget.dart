@@ -42,7 +42,7 @@ class ExploreWidget extends StatelessWidget {
             child: Container(
               alignment: Alignment.bottomCenter,
               width: realW(159 + (standardWidth - 159) * currentExplorePercent),
-              height: realH(80 + (766 - 122) * currentExplorePercent),
+              height: realH(100 + (766 - 122) * currentExplorePercent),
               decoration: BoxDecoration(
                   gradient: LinearGradient(begin: Alignment.topCenter, colors: [
                     Colors.blueAccent[100],

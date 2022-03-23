@@ -17,6 +17,7 @@ import 'package:flutter_finey/screens/common_widgets/finey_drawer.dart';
 import 'package:flutter_finey/screens/common_widgets/responsive_container.dart';
 import 'package:flutter_finey/screens/common_widgets/responsive_padding.dart';
 import 'package:flutter_finey/service/auth.dart';
+import 'package:intl/intl.dart';
 import 'package:web3dart/credentials.dart';
 
 class WalletHomeScreen extends StatefulWidget {
@@ -33,10 +34,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
   final bool _running = true;
   static wallet.Wallet dadosWallet;
   static LocalizacaoPet dadosLocalizacaoPet;
-  BlockchainUtils blockchainUtils = BlockchainUtils();
+  static BlockchainUtils blockchainUtils = BlockchainUtils();
   final Dio _dio = Dio();
   var _baseUrl = 'https://api-rinkeby.etherscan.io/api';
   static List<EtherScanResultTransaction> transactions = null;
+  final currencyFormatter = NumberFormat('#,##0.000');
 
   @override
   void initState() {
@@ -44,7 +46,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
     blockchainUtils.initialSetup();
     getDadosWallet(Auth.user.email);
     getDadosRecompensa(Auth.user.email);
-    getTransactionEtherScan("0x4324a8c8131931f599870d9A55572bfa63a302ec", dotenv.env["FIRST_COIN_CONTRACT_ADDRESS"]);
+
   }
 
   static Future<List<EtherScanResultTransaction>> getTransactionEtherScan(String adress, String apiKey) async {
@@ -78,15 +80,18 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
       var nome = snapshot['nome'];
       var privateKey = snapshot['privateKey'];
       var address = snapshot['address'];
-      var contrato_aprovado = snapshot['contrato_aprovado'];
+      var contratoAprovado = snapshot['contratoAprovado'];
 
       wallet.Wallet recuperaWallet = new wallet.Wallet(
           nome: nome
           , privateKey: privateKey
           , address: address
-          , contrato_aprovado: contrato_aprovado);
+          , contratoAprovado: contratoAprovado);
 
       dadosWallet = recuperaWallet;
+
+      getTransactionEtherScan(dadosWallet.address, dotenv.env["FIRST_COIN_CONTRACT_ADDRESS"]);
+      approve(dadosWallet.address);
 
       return dadosWallet;
     } else {
@@ -118,20 +123,29 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
         amount, dadosWallet.privateKey);
   }
 
-  void transferFromToken(EthereumAddress addressFrom,
-      EthereumAddress addressSend, double amount) async {
+  void transferFromToken(EthereumAddress addressFrom, EthereumAddress addressSend, double amount) async {
     EthereumAddress addressFrom = EthereumAddress.fromHex(dadosWallet.address);
-    EthereumAddress addressSend =
-        EthereumAddress.fromHex("0x9Fb2838fC9570D57baE43e41dFE716B294905F04");
-    blockchainUtils.transferFrom(
-        addressFrom, addressSend, amount, dadosWallet.privateKey);
+    EthereumAddress addressSend = EthereumAddress.fromHex("0x9Fb2838fC9570D57baE43e41dFE716B294905F04");
+    blockchainUtils.transferFrom(addressFrom, addressSend, amount, dadosWallet.privateKey);
+  }
+
+  static void approve(String address) async {
+    if(!dadosWallet.contratoAprovado && address != null){
+     String response = await blockchainUtils.approve(EthereumAddress.fromHex(address), 100009000000000000000, dadosWallet.privateKey);
+
+     if(response != null){
+       Firestore.instance.collection('wallet').document(Auth.user.email).updateData({'contratoAprovado': true});
+     }
+
+    }
   }
 
   Stream<String> getBalanceOfWallet() async* {
     while (_running) {
-      await Future<void>.delayed(const Duration(seconds: 1));
-      total_token = await blockchainUtils
-          .getBalanceOf(EthereumAddress.fromHex(dadosWallet.address));
+      await Future<void>.delayed(const Duration(seconds: 3));
+      total_token = await blockchainUtils.getBalanceOf(EthereumAddress.fromHex(dadosWallet.address));
+      //final currencyFormatter = NumberFormat('#,##0.000');
+      //total_token = currencyFormatter.format(total_token);
       yield "${total_token}";
     }
   }
@@ -221,13 +235,12 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
                       child: StreamBuilder(
                         stream: getBalanceOfWallet(),
                         builder: (context, AsyncSnapshot<String> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
+                          if (snapshot.data == null) {
                             return const CircularProgressIndicator();
                           }
                           return Text(
                               'HVT' +
-                                  ' - ${double.parse(snapshot.data) / 1000000000000000000}',
+                                  ' - ${currencyFormatter.format(double.parse(snapshot.data) / 1000000000000000000)}',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -391,7 +404,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
                               height: 4,
                             ),
                             Text(
-                              "Ganhos",
+                              "Configurações",
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 14,

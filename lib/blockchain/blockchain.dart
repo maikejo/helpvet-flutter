@@ -63,15 +63,10 @@ class BlockchainUtils {
     return response;
   }
 
-  Future<String> withdrawCoin(double amount, String privateKey) async {
+  Future<String> approve(EthereumAddress address, double amount, String privateKey) async {
+    address = wallet_address;
     var bigAmount = BigInt.from(amount);
-    var response = await submit("withdrawBalance", [bigAmount], privateKey);
-    return response;
-  }
-
-  Future<String> depositCoin(double amount, String privateKey) async {
-    var bigAmount = BigInt.from(amount);
-    var response = await submit("depositBalance", [bigAmount], privateKey);
+    var response = await submit("approve", [address, bigAmount], privateKey);
     return response;
   }
 

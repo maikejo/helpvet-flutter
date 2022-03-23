@@ -21,6 +21,7 @@ import 'package:flutter_finey/helper/map_helper.dart';
 import 'package:flutter_finey/helper/ui_helper.dart';
 import 'package:flutter_finey/main.dart';
 import 'package:flutter_finey/model/localizacao_pet.dart';
+import 'package:flutter_finey/model/user.dart';
 import 'package:flutter_finey/service/BackgroundNotification.dart';
 import 'package:flutter_finey/service/auth.dart';
 import 'package:flutter_finey/service/google_maps_requests.dart';
@@ -128,11 +129,10 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   Position userLocation2;
 
   Position _position;
+  static Position _currentPositionDb;
   GoogleMapController _controller2;
   LocalizacaoPet _localizacaoPet;
   static var httpClient = new HttpClient();
-
-
   final oCcy = new NumberFormat("#,##0.00", "pt_BR");
 
   static final CameraPosition _kInitialPosition = const CameraPosition(
@@ -148,11 +148,16 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
 
   bool isPlay = false;
   Stopwatch _stopwatch;
+  User usuario;
 
+  double valorRecompensa;
+  int distanciaRecompensa;
 
   @override
   void initState() {
     super.initState();
+    _dadosUsuario();
+    retornaValorRecompensa();
 
     _stopwatch = Stopwatch();
 
@@ -261,6 +266,8 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         isPlay = true;
         _stopwatch.start();
         _locationSubscription?.resume();
+        updateLocalizacaoInicial(_currentPosition);
+
       });
     } else {
       // show error
@@ -316,15 +323,45 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
                 LocationCallbackHandler.notificationCallback)));
   }
 
-  void addReward(Position _currentPosition, double distancia_percorrida) async {
-   if(distancia_percorrida >= 100){
-     double recompensa = distancia_percorrida * 0.001 / 100;
-     final currencyFormatter = NumberFormat('#,##0.000');
+  void _dadosUsuario() async{
+    User user = await Auth.getDadosUser(Auth.user.email);
+    setState(() {
+      usuario = user;
+    });
+  }
 
-     LocalizacaoPet localizacaoPet = new LocalizacaoPet(distancia_percorrida: distancia_percorrida, recompensa: currencyFormatter.format(recompensa), localizacao_inicial: new GeoPoint(_currentPosition.latitude, _currentPosition.longitude));
-     Firestore.instance.document("localizacao_pet/${Auth.user.email}")
-         .setData(localizacaoPet.toJson());
-   }
+  static void updateLocalizacaoInicial(Position _currentPosition) async {
+    _currentPositionDb = _currentPosition;
+    Firestore.instance.collection('localizacao_pet').document(Auth.user.email).updateData({'localizacao_inicial': new GeoPoint(_currentPositionDb.latitude, _currentPositionDb.longitude)});
+  }
+
+  void retornaValorRecompensa() async{
+    Stream<QuerySnapshot> valor =  Firestore.instance.collection('recompensa').snapshots();
+    valor.listen((onData){
+      onData.documents.forEach((doc) {
+
+        List<DocumentSnapshot> listaRecompensa = onData.documents;
+        for (var lista in listaRecompensa) {
+           valorRecompensa = lista.data["valor"];
+           distanciaRecompensa = lista.data["distancia"];
+        }
+
+      });
+    });
+
+  }
+
+  void addReward(Position _currentPosition, double distancia_percorrida) async {
+    if(valorRecompensa != null && distanciaRecompensa != null){
+      if(distancia_percorrida >= distanciaRecompensa && isPlay){
+        double recompensa = distancia_percorrida * valorRecompensa / 100;
+        final currencyFormatter = NumberFormat('#,##0.000');
+
+        LocalizacaoPet localizacaoPet = new LocalizacaoPet(distancia_percorrida: distancia_percorrida, recompensa: currencyFormatter.format(recompensa) , localizacao_inicial:  new GeoPoint(_currentPositionDb.latitude, _currentPositionDb.longitude));
+        Firestore.instance.document("localizacao_pet/${Auth.user.email}")
+            .setData(localizacaoPet.toJson());
+      }
+    }
   }
 
   Future<LocalizacaoPet> getLocalizacaoPet(String email) async{
@@ -333,10 +370,11 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     if (snapshot.data != null) {
       var distanciaPercorrida = snapshot['distancia_percorrida'];
       var recompensa = snapshot['recompensa'];
+      var localizacao_inicial = snapshot['distancia_inicial'];
 
       LocalizacaoPet localizacao_pet = new LocalizacaoPet(
           distancia_percorrida: distanciaPercorrida,
-          recompensa: recompensa
+          recompensa: recompensa, localizacao_inicial: localizacao_inicial
       );
 
       _localizacaoPet = localizacao_pet;
@@ -370,7 +408,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     marker = Marker(
       markerId: id,
       position: LatLng(lat, lng),
-      icon: await getMarkerIcon("https://firebasestorage.googleapis.com/v0/b/animal-home-care.appspot.com/o/maikejo%40gmail.com%2Favatar%2Favatar?alt=media&token=14cee457-f35d-4be5-8add-4bc292b47f7e", Size(150.0, 150.0)),
+      icon: await getMarkerIcon(usuario.imagemUrl, Size(150.0, 150.0)),
       infoWindow: InfoWindow(title: nomeClinica, snippet: endereco),
     );
     setState(() {
@@ -458,12 +496,10 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
         _totalDistance += _distanceBetweenLastTwoLocations;
         print('Total Distance: $_totalDistance');
 
-        getDirections(_previousPosition, _currentPosition);
-
         getLocalizacaoPet(Auth.user.email);
 
         double totalDistancia =  _localizacaoPet.distancia_percorrida + _totalDistance;
-
+        getDirections(_previousPosition, _currentPosition);
         addReward(_currentPosition, totalDistancia);
       }
     });
@@ -473,21 +509,24 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
   getDirections(Position previousPosition, Position currentPossition) async {
     List<LatLng> polylineCoordinates = [];
 
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleAPiKey,
-      PointLatLng(-16.0258844, -48.0721724),
-      PointLatLng(currentPossition.latitude, currentPossition.longitude),
-      travelMode: TravelMode.walking,
-    );
+    if(isPlay){
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        googleAPiKey,
+        PointLatLng(_currentPositionDb.latitude, _currentPositionDb.longitude),
+        PointLatLng(currentPossition.latitude, currentPossition.longitude),
+        travelMode: TravelMode.walking,
+      );
 
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    } else {
-      print(result.errorMessage);
+      if (result.points.isNotEmpty) {
+        result.points.forEach((PointLatLng point) {
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        });
+      } else {
+        print(result.errorMessage);
+      }
+      addPolyLine(polylineCoordinates);
     }
-    addPolyLine(polylineCoordinates);
+
   }
 
   addPolyLine(List<LatLng> polylineCoordinates) {
@@ -496,7 +535,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
       polylineId: id,
       color: Colors.deepPurpleAccent,
       points: polylineCoordinates,
-      width: 16,
+      width: 6,
     );
     polylines[id] = polyline;
     setState(() {});
