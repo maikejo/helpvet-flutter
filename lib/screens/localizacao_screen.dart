@@ -152,11 +152,12 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
 
   double valorRecompensa;
   int distanciaRecompensa;
+  String urlAvatar;
 
   @override
   void initState() {
     super.initState();
-    _dadosUsuario();
+    retornaAvatarPet();
     retornaValorRecompensa();
 
     _stopwatch = Stopwatch();
@@ -205,6 +206,10 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
 
   @override
   void dispose() {
+    if (_locationSubscription != null) {
+      _locationSubscription.cancel();
+      _locationSubscription = null;
+    }
     super.dispose();
   }
 
@@ -323,13 +328,6 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
                 LocationCallbackHandler.notificationCallback)));
   }
 
-  void _dadosUsuario() async{
-    User user = await Auth.getDadosUser(Auth.user.email);
-    setState(() {
-      usuario = user;
-    });
-  }
-
   static void updateLocalizacaoInicial(Position _currentPosition) async {
     _currentPositionDb = _currentPosition;
     Firestore.instance.collection('localizacao_pet').document(Auth.user.email).updateData({'localizacao_inicial': new GeoPoint(_currentPositionDb.latitude, _currentPositionDb.longitude)});
@@ -345,10 +343,21 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
            valorRecompensa = lista.data["valor"];
            distanciaRecompensa = lista.data["distancia"];
         }
-
       });
     });
+  }
 
+  void retornaAvatarPet() async{
+    Stream<QuerySnapshot> valor =  Firestore.instance.collection('cadastro_pet').document(Auth.user.email).collection('lista').snapshots();
+    valor.listen((onData){
+      onData.documents.forEach((doc) {
+
+        List<DocumentSnapshot> listaDadoPet = onData.documents;
+        for (var lista in listaDadoPet) {
+          urlAvatar = lista.data["urlAvatar"];
+        }
+      });
+    });
   }
 
   void addReward(Position _currentPosition, double distancia_percorrida) async {
@@ -408,7 +417,7 @@ class _LocalizacaoScreenState extends State<LocalizacaoScreen> with TickerProvid
     marker = Marker(
       markerId: id,
       position: LatLng(lat, lng),
-      icon: await getMarkerIcon(usuario.imagemUrl, Size(150.0, 150.0)),
+      icon: await getMarkerIcon(urlAvatar, Size(150.0, 150.0)),
       infoWindow: InfoWindow(title: nomeClinica, snippet: endereco),
     );
     setState(() {

@@ -23,6 +23,7 @@ import 'package:flutter_finey/screens/exame_screen.dart';
 import 'package:flutter_finey/screens/home_pet_widgets/home_adm_perfil.dart';
 import 'package:flutter_finey/screens/social_widgets/ui/insta_home_screen.dart';
 import 'package:flutter_finey/screens/vacina_screen.dart';
+import 'package:flutter_finey/screens/wallet/wallet_home_screen.dart';
 import 'package:flutter_finey/service/auth.dart';
 import 'package:flutter_finey/service/cadastro_pet.dart';
 import 'package:flutter_finey/styles/common_variables.dart';
@@ -1157,13 +1158,11 @@ class _HomePetScreenState extends State<HomePetScreen> {
                               FadeIn(
                                   1,
                                   Container(
-                                    height:
-                                        sizeConfig.dynamicScaleSize(size: 270),
+                                    height: sizeConfig.dynamicScaleSize(size: 400),
                                     width: MediaQuery.of(context).size.width,
                                     padding: EdgeInsets.all(35),
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
                                         Row(
                                           mainAxisAlignment:
@@ -1508,6 +1507,142 @@ class _HomePetScreenState extends State<HomePetScreen> {
                                                         ),
                                                       ),
                                                     ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 20.0),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  width: 90.0,
+                                                  child: Card(
+                                                    elevation: 10,
+                                                    color: Colors.blueGrey,
+                                                    shape:
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.all(Radius.circular(10)),
+                                                      side: BorderSide(color: Colors.white),
+                                                    ),
+                                                    child: InkWell(
+                                                      child: Center(
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                          MainAxisSize.min,
+                                                          children: [
+                                                            IconButton(
+                                                                icon: ResponsiveImage(
+                                                                    image: new ExactAssetImage(
+                                                                        "images/icons/walleth_icon.png"),
+                                                                    width: 42.0,
+                                                                    height: 42.0
+                                                                ),
+                                                                onPressed: () {
+                                                                  Navigator
+                                                                      .push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder: (context) =>
+                                                                          WalletHomeScreen(
+                                                                              privateKey: null),
+                                                                    ),
+                                                                  );
+                                                                }),
+                                                            Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                              child: Text(
+                                                                "Wallet",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  width: 90.0,
+                                                  child: Card(
+                                                    elevation: 10,
+                                                    color: Colors.amber,
+                                                    shape:
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.all(Radius.circular(10)),
+                                                      side: BorderSide(color: Colors.white),
+                                                    ),
+                                                    child: InkWell(
+                                                      child: Center(
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                          MainAxisSize.min,
+                                                          children: [
+                                                            IconButton(
+                                                                icon: ResponsiveImage(
+                                                                    image: new ExactAssetImage(
+                                                                        "images/icons/ic_pet_shop.png"),
+                                                                    width: 45.0,
+                                                                    height: 45.0
+                                                                ),
+                                                                onPressed: () {
+                                                                  Navigator
+                                                                      .push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder: (context) =>
+                                                                          AgendaScreen(
+                                                                              idPet: widget.idPet),
+                                                                    ),
+                                                                  );
+                                                                }),
+                                                            Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                              child: Text(
+                                                                "Market Pet",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .indigo),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  width: 90.0,
+                                                  child: Card(
+                                                    elevation: 10,
+                                                    color: Colors.blueGrey,
+                                                    shape:
+                                                    RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.all(Radius.circular(10)),
+                                                      side: BorderSide(color: Colors.white),
+                                                    ),
+
                                                   ),
                                                 ),
                                               ],

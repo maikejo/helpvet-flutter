@@ -79,6 +79,7 @@ dependencies:
   location_permissions: ^3.0.0+1
   json_annotation: any
   flutter_polyline_points: any
+  google_fonts: any
 
 
   web3dart: any
@@ -504,6 +505,8 @@ flutter:
     - images/icons/ic_menu_tres_pontos.png
     - images/icons/ic_track_pet.png
     - images/icons/ic_3d.png
+    - images/icons/walleth_icon.png
+    - images/icons/ic_pet_shop.png
 
   fonts:
     - family: SanFransisco
